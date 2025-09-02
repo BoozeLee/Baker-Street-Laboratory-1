@@ -43,7 +43,13 @@ CORS(app)
 
 # Configuration
 app.config.update(
-    SECRET_KEY=os.getenv('SECRET_KEY', 'baker-street-laboratory-secret'),
+
+# Validate required environment variables
+if not app.config['SECRET_KEY']:
+    app_logger.error("SECRET_KEY environment variable is required")
+    sys.exit(1)
+
+    SECRET_KEY=os.getenv('SECRET_KEY'),
     CACHE_TYPE='simple',
     CACHE_DEFAULT_TIMEOUT=300,
     RATELIMIT_STORAGE_URL='memory://',
