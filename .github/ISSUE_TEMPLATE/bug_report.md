@@ -1,54 +1,32 @@
 ---
-name: Bug Report
-about: Create a report to help us improve Baker Street Laboratory
+name: Bug report
+about: Create a report to help us improve
 title: '[BUG] '
-labels: ['bug', 'needs-triage']
+labels: bug
 assignees: ''
-
 ---
 
-## 🐛 Bug Description
+**Describe the bug**
 A clear and concise description of what the bug is.
 
-## 🔬 Research Context
-- **Research Query**: What were you researching when this occurred?
-- **Agent Configuration**: Which agents were involved?
-- **Pipeline Stage**: At what stage did the bug occur?
-
-## 🔄 Steps to Reproduce
+**To Reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-## ✅ Expected Behavior
+**Expected behavior**
 A clear and concise description of what you expected to happen.
 
-## 📸 Screenshots
+**Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-## 🖥️ Environment Information
-- **OS**: [e.g. Ubuntu 20.04, macOS 12.0, Windows 11]
-- **Python Version**: [e.g. 3.8.10]
-- **Baker Street Laboratory Version**: [e.g. 1.0.0]
-- **Virtual Environment**: [Yes/No]
+**Environment (please complete the following information):**
+- OS: [e.g. Ubuntu 20.04]
+- Python version: [e.g. 3.11]
+- Browser: [e.g. chrome, safari]
+- Version: [e.g. 22]
 
-## 📋 Database Status
-Please run `./run.sh status` and paste the output:
-```
-[Paste status output here]
-```
-
-## 📝 Additional Context
+**Additional context**
 Add any other context about the problem here.
-
-## 🔍 Error Logs
-If applicable, paste relevant error logs:
-```
-[Paste error logs here]
-```
-
----
-
-**Thank you for helping improve Baker Street Laboratory! 🔬**
