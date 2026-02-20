@@ -1,3 +1,27 @@
+# Baker Street Laboratory
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/baker-street-lab)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](https://bakerstreetproject.github.io)
+
+## What It Does
+Autonomous AI research platform. 8 integrated agents:
+Scout, Elohim, MetaGPT, AgenticSeek, Primax, Codex, Lexicon, Marco-o1.
+Self-assembling brick architecture. FastAPI control plane.
+
+## Pricing
+- **Starter** — $299/month — 1 agent, 100 runs/day
+- **Pro**     — $999/month — all agents, 1,000 runs/day
+- **Lab**     — $2,999/month — unlimited, custom integrations
+
+## Quick Deploy
+```bash
+railway up
+# Set env vars: STRIPE_SECRET_KEY, SUPABASE_URL
+# Configure Stripe webhook: POST /webhook/stripe
+```
+
+---
+
 # 🔬 Baker Street Laboratory
 
 **Revolutionary AI-Augmented Research Ecosystem - Now 95% Operational!**
