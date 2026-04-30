@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:research_app/services/api_service.dart';
 import 'package:research_app/widgets/star_rating.dart';
-import 'package:research_app/widgets/agent_card.dart';
 import 'report_detail_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -16,21 +15,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final TextEditingController _queryController = TextEditingController();
   
   Map<String, dynamic>? _systemStatus;
-  List<dynamic> _reports = [];
+  List<ResearchReport> _reports = [];
   bool _isLoading = false;
   bool _isResearching = false;
   String _selectedTab = 'Dashboard';
-
-  final List<Map<String, dynamic>> _agents = [
-    {'name': 'baker-street-vision', 'purpose': 'Visual analysis detective', 'size': '5.0 GB', 'status': 'Operational', 'icon': Icons.visibility},
-    {'name': 'baker-street-embed', 'purpose': 'Semantic search specialist', 'size': '274 MB', 'status': 'Operational', 'icon': Icons.search},
-    {'name': 'baker-street-scientific', 'purpose': 'Scientific methodology', 'size': '4.1 GB', 'status': 'Operational', 'icon': Icons.science},
-    {'name': 'baker-street-creative', 'purpose': 'Creative writing & reports', 'size': '4.1 GB', 'status': 'Operational', 'icon': Icons.create},
-    {'name': 'baker-street-coder', 'purpose': 'Data analysis & coding', 'size': '776 MB', 'status': 'Operational', 'icon': Icons.code},
-    {'name': 'baker-street-legal', 'purpose': 'Legal research & compliance', 'size': '2.0 GB', 'status': 'Operational', 'icon': Icons.gavel},
-    {'name': 'baker-street-audio', 'purpose': 'Audio processing', 'size': '4.7 GB', 'status': 'Operational', 'icon': Icons.audiotrack},
-    {'name': 'baker-street-longcontext', 'purpose': 'Long context processor', 'size': '4.4 GB', 'status': 'CPU Fallback', 'icon': Icons.text_snippet},
-  ];
 
   @override
   void initState() {
@@ -64,7 +52,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final result = await _api.conductResearch(_queryController.text);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Research completed')),
+          SnackBar(content: Text('Research completed: ${result['session_id']}')),
         );
         _queryController.clear();
         _loadData();
@@ -149,8 +137,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return _buildResearchTab();
       case 'Reports':
         return _buildReportsTab();
-      case 'Agents':
-        return _buildAgentsTab();
       default:
         return _buildDashboardTab();
     }
@@ -185,8 +171,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text('API Version: ${_systemStatus?['version'] ?? 'Unknown'}'),
-                  Text('Last Check: ${_systemStatus?['timestamp'] ?? 'Never'}'),
+                  Text('API Version: ${_systemStatus?['version'] ?? "Unknown"}'),
+                  Text('Last Check: ${_systemStatus?['timestamp'] ?? "Never"}'),
                 ],
             ),
           ),
@@ -281,7 +267,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Text(report.createdAt?.toString().split(' ')[0] ?? ''),
                 const SizedBox(height: 4),
                 StarRating(
-                  rating: report.rating ?? 0.0,
+                  rating: report.rating,
                   onRatingChanged: (rating) {
                     setState(() {
                       report.rating = rating;
@@ -300,29 +286,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               );
             },
           ),
-        );
-      },
-    );
-  }
-
-  Widget _buildAgentsTab() {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 1.2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-      ),
-      itemCount: _agents.length,
-      itemBuilder: (context, index) {
-        final agent = _agents[index];
-        return AgentCard(
-          name: agent['name'],
-          purpose: agent['purpose'],
-          size: agent['size'],
-          status: agent['status'],
-          icon: agent['icon'],
         );
       },
     );
