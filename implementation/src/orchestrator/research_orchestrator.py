@@ -59,6 +59,19 @@ class ResearchOrchestrator:
             self.logger.error(f"Failed to initialize research orchestrator: {e}")
             return False
 
+    async def _get_agent_token(self, agent_id: str, scope: str) -> str:
+        """Helper to fetch an ephemeral token from the Credential Broker."""
+        try:
+            import requests
+            response = requests.post(
+                "http://localhost:5000/api/v1/broker/token",
+                json={"agent_id": agent_id, "scope": scope}
+            )
+            return response.json().get('token')
+        except Exception as e:
+            self.logger.error(f"Failed to get agent token for {agent_id}: {e}")
+            raise e
+
     async def conduct_research(
         self, 
         query: str, 
@@ -74,6 +87,10 @@ class ResearchOrchestrator:
         Returns:
             Dictionary containing research results and metadata
         """
+        # Brokered handshake
+        token = await self._get_agent_token("research-orchestrator", "perform:research")
+        self.logger.info(f"Session {self.session_id} initiated with brokered identity.")
+        
         self.logger.info(f"Starting research session {self.session_id}")
         self.logger.info(f"Query: {query}")
         
