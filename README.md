@@ -2,6 +2,13 @@
 
 Autonomous AI research platform with 8 specialized models, multi-agent orchestration, and production-grade infrastructure.
 
+## 🌟 Support This Project
+
+**[💙 Become a Sponsor](https://github.com/sponsors/kilisan)** — Get model weights, training data access, and consulting!
+
+See [PREMIUM.md](PREMIUM.md) and [SPONSORS.md](SPONSORS.md) for details.
+
+
 Part of the [Baker Street Labs](https://github.com/Bakery-street-project) ecosystem.
 
 ## 🚀 Live Deployment
