@@ -1,0 +1,43 @@
+# Baker Street Laboratory - Image Generation Prompts
+# Specialized prompts for psychedelic detective art
+
+base_styles:
+  amphetamemes:
+    positive: "amphetamemes style, psychedelic 2D comic book art, vibrant colors, surreal elements, detective theme, noir atmosphere, trippy visuals, geometric patterns, kaleidoscopic effects"
+    negative: "3d render, realistic, photograph, blurry, low quality, watermark, signature"
+    
+  detective_noir:
+    positive: "film noir style, detective, dark shadows, dramatic lighting, black and white with color accents, mystery atmosphere, urban setting"
+    negative: "bright colors, cheerful, cartoon, anime, low quality"
+    
+  psychedelic_research:
+    positive: "scientific visualization, psychedelic patterns, data visualization, research laboratory, colorful charts and graphs, trippy scientific diagrams"
+    negative: "boring, monochrome, simple, low detail"
+
+scene_types:
+  investigation:
+    prompt: "detective investigating clues, magnifying glass, evidence board, mysterious atmosphere, {base_style}"
+    
+  laboratory:
+    prompt: "research laboratory, scientific equipment, colorful chemicals, data analysis, {base_style}"
+    
+  data_visualization:
+    prompt: "abstract data visualization, flowing information, network diagrams, colorful connections, {base_style}"
+    
+  report_cover:
+    prompt: "research report cover, professional design, psychedelic elements, title typography, {base_style}"
+
+characters:
+  psychedelic_detective:
+    prompt: "detective character, trench coat, magnifying glass, surrounded by swirling psychedelic patterns, {base_style}"
+    
+  research_scientist:
+    prompt: "scientist character, lab coat, surrounded by colorful data visualizations, {base_style}"
+
+settings:
+  default_model: "dreamshaper_8"
+  default_steps: 30
+  default_cfg_scale: 7.5
+  default_width: 768
+  default_height: 768
+  default_sampler: "DPM++ 2M Karras"

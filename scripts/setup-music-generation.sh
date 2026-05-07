@@ -15,12 +15,14 @@ NC='\033[0m' # No Color
 # Configuration
 MUSICGEN_DIR="$HOME/musicgen"
 BARK_DIR="$HOME/bark"
-LOG_FILE="logs/music-generation-setup.log"
+VENV_PATH="$HOME/baker-street-audio-venv"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOG_FILE="$SCRIPT_DIR/../logs/music-generation-setup.log"
 
 # Create necessary directories
-mkdir -p logs
-mkdir -p config/music-generation
-mkdir -p output/audio
+mkdir -p "$SCRIPT_DIR/../logs"
+mkdir -p "$SCRIPT_DIR/../config/music-generation"
+mkdir -p "$SCRIPT_DIR/../output/audio"
 
 echo -e "${BLUE}🎵 Baker Street Laboratory - Music Generation Setup${NC}"
 echo -e "${BLUE}=================================================${NC}"
@@ -46,10 +48,16 @@ check_requirements() {
         exit 1
     fi
     
+    # Check virtualenv
+    if ! python3 -m venv --help &> /dev/null; then
+        log_message "${RED}❌ python3-venv is required but not installed${NC}"
+        exit 1
+    fi
+    
     # Check ffmpeg
     if ! command -v ffmpeg &> /dev/null; then
         log_message "${YELLOW}⚠️  Installing ffmpeg...${NC}"
-        sudo apt-get update && sudo apt-get install -y ffmpeg
+        sudo pacman -S --noconfirm ffmpeg
     fi
     
     log_message "${GREEN}✅ System requirements check passed${NC}"
@@ -59,16 +67,18 @@ check_requirements() {
 install_musicgen() {
     log_message "${BLUE}📥 Installing MusicGen for music generation...${NC}"
     
-    # Install required packages
-    pip3 install --upgrade pip
-    pip3 install torch torchvision torchaudio
-    pip3 install transformers
-    pip3 install scipy
-    pip3 install librosa
-    pip3 install soundfile
+    # Create and activate virtual environment
+    if [ ! -d "$VENV_PATH" ]; then
+        log_message "${BLUE}📦 Creating virtual environment at $VENV_PATH...${NC}"
+        python3 -m venv "$VENV_PATH"
+    fi
     
-    # Install MusicGen
-    pip3 install musicgen
+    source "$VENV_PATH/bin/activate"
+    
+    # Install required packages
+    pip install --upgrade pip
+    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+    pip install transformers scipy librosa soundfile musicgen pyyaml
     
     log_message "${GREEN}✅ MusicGen installation completed${NC}"
 }
@@ -77,8 +87,10 @@ install_musicgen() {
 install_bark() {
     log_message "${BLUE}📥 Installing Bark for sound effects and speech...${NC}"
     
+    source "$VENV_PATH/bin/activate"
+    
     # Install Bark
-    pip3 install git+https://github.com/suno-ai/bark.git
+    pip install git+https://github.com/suno-ai/bark.git
     
     log_message "${GREEN}✅ Bark installation completed${NC}"
 }
@@ -88,8 +100,10 @@ create_music_scripts() {
     log_message "${BLUE}⚙️  Creating music generation scripts...${NC}"
     
     # Create MusicGen script
-    cat > "scripts/generate-music.py" << 'EOF'
-#!/usr/bin/env python3
+    cat > "$SCRIPT_DIR/../scripts/generate-music.py" << EOF
+#!$VENV_PATH/bin/python3
+EOF
+    cat >> "$SCRIPT_DIR/../scripts/generate-music.py" << 'EOF'
 """
 Baker Street Laboratory - Music Generation
 Generates psychedelic detective atmosphere music using MusicGen
@@ -111,7 +125,7 @@ class BakerStreetMusicGenerator:
         self.config = self.load_config()
         
     def load_config(self):
-        config_path = Path("config/music-generation/baker-street-music.yaml")
+        config_path = Path("$SCRIPT_DIR/../config/music-generation/baker-street-music.yaml")
         if config_path.exists():
             with open(config_path, 'r') as f:
                 return yaml.safe_load(f)
@@ -162,7 +176,7 @@ class BakerStreetMusicGenerator:
         
         # Save audio file
         if output_path is None:
-            output_path = f"output/audio/generated_music_{hash(prompt) % 10000}.wav"
+            output_path = f"$SCRIPT_DIR/../output/audio/generated_music_{hash(prompt) % 10000}.wav"
         
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -199,11 +213,13 @@ if __name__ == "__main__":
     main()
 EOF
 
-    chmod +x "scripts/generate-music.py"
+    chmod +x "$SCRIPT_DIR/../scripts/generate-music.py"
     
     # Create Bark sound effects script
-    cat > "scripts/generate-sound-effects.py" << 'EOF'
-#!/usr/bin/env python3
+    cat > "$SCRIPT_DIR/../scripts/generate-sound-effects.py" << EOF
+#!$VENV_PATH/bin/python3
+EOF
+    cat >> "$SCRIPT_DIR/../scripts/generate-sound-effects.py" << 'EOF'
 """
 Baker Street Laboratory - Sound Effects Generation
 Generates sound effects and speech using Bark
@@ -240,7 +256,7 @@ class BakerStreetSoundGenerator:
         
         # Save audio file
         if output_path is None:
-            output_path = f"output/audio/speech_{hash(text) % 10000}.wav"
+            output_path = f"$SCRIPT_DIR/../output/audio/speech_{hash(text) % 10000}.wav"
         
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -285,7 +301,7 @@ if __name__ == "__main__":
     main()
 EOF
 
-    chmod +x "scripts/generate-sound-effects.py"
+    chmod +x "$SCRIPT_DIR/../scripts/generate-sound-effects.py"
     
     log_message "${GREEN}✅ Music generation scripts created${NC}"
 }
@@ -295,7 +311,7 @@ create_config() {
     log_message "${BLUE}⚙️  Creating music configuration...${NC}"
     
     # Create music generation config
-    cat > "config/music-generation/baker-street-music.yaml" << 'EOF'
+    cat > "$SCRIPT_DIR/../config/music-generation/baker-street-music.yaml" << 'EOF'
 # Baker Street Laboratory - Music Generation Configuration
 # Prompts and settings for psychedelic detective atmosphere
 
@@ -391,7 +407,7 @@ create_examples() {
     log_message "${BLUE}📝 Creating usage examples...${NC}"
     
     # Create example script
-    cat > "scripts/baker-street-audio-examples.sh" << 'EOF'
+    cat > "$SCRIPT_DIR/../scripts/baker-street-audio-examples.sh" << 'EOF'
 #!/bin/bash
 
 # Baker Street Laboratory - Audio Generation Examples
@@ -407,19 +423,19 @@ echo "🎼 Generating background music..."
 python3 scripts/generate-music.py \
     "ambient psychedelic music for focused research, dreamy synthesizers, laboratory atmosphere" \
     --duration 60 \
-    --output "output/audio/research_session.wav"
+    --output "$SCRIPT_DIR/../output/audio/research_session.wav"
 
 # Investigation music
 python3 scripts/generate-music.py \
     "detective noir investigation music, mysterious jazz, urban night atmosphere" \
     --duration 45 \
-    --output "output/audio/investigation_theme.wav"
+    --output "$SCRIPT_DIR/../output/audio/investigation_theme.wav"
 
 # Data analysis music
 python3 scripts/generate-music.py \
     "rhythmic data analysis music, digital patterns, computational beats" \
     --duration 90 \
-    --output "output/audio/data_analysis.wav"
+    --output "$SCRIPT_DIR/../output/audio/data_analysis.wav"
 
 # Generate sound effects
 echo "🔊 Generating sound effects..."
@@ -428,13 +444,13 @@ echo "🔊 Generating sound effects..."
 python3 scripts/generate-sound-effects.py \
     "laboratory equipment humming, scientific atmosphere" \
     --type sound \
-    --output "output/audio/lab_ambient.wav"
+    --output "$SCRIPT_DIR/../output/audio/lab_ambient.wav"
 
 # Discovery sound
 python3 scripts/generate-sound-effects.py \
     "eureka moment, breakthrough discovery chime" \
     --type sound \
-    --output "output/audio/discovery.wav"
+    --output "$SCRIPT_DIR/../output/audio/discovery.wav"
 
 # Generate speech examples
 echo "🗣️  Generating speech examples..."
@@ -444,20 +460,20 @@ python3 scripts/generate-sound-effects.py \
     "The investigation reveals fascinating patterns in the data, leading us deeper into the mystery." \
     --type speech \
     --voice "v2/en_speaker_6" \
-    --output "output/audio/detective_narration.wav"
+    --output "$SCRIPT_DIR/../output/audio/detective_narration.wav"
 
 # Research summary
 python3 scripts/generate-sound-effects.py \
     "Analysis complete. The results show significant correlations in the psychedelic research data." \
     --type speech \
     --voice "v2/en_speaker_3" \
-    --output "output/audio/research_summary.wav"
+    --output "$SCRIPT_DIR/../output/audio/research_summary.wav"
 
 echo "✅ Audio examples generated in output/audio/"
 echo "🎧 Play the files to test the Baker Street Laboratory audio system!"
 EOF
 
-    chmod +x "scripts/baker-street-audio-examples.sh"
+    chmod +x "$SCRIPT_DIR/../scripts/baker-street-audio-examples.sh"
     
     log_message "${GREEN}✅ Usage examples created${NC}"
 }

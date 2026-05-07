@@ -7,13 +7,15 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/psychedelic.css">
     <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/comic.css">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     
-    <!-- Icons -->
+    <!-- Icons: Phosphor (modern SVG icon set) + Font Awesome fallback -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="detective-theme">
@@ -33,65 +35,112 @@
                     <div class="custom-logo">
                         <img src="assets/images/ui/main_logo.png" alt="Baker Street Laboratory" class="main-logo-image">
                         <div class="logo-text">
-                            <h1 class="app-title">Baker Street Laboratory</h1>
-                            <p class="app-subtitle">Kaleidoscopic Research Dreamscape</p>
+                            <h1 class="app-title neon-comic-title" style="font-size:1.6rem;">Baker Street Laboratory</h1>
+                            <p class="app-subtitle">
+                              <span class="pipe-smoke-ring" style="font-size:1rem;margin-right:4px;">🔍</span>
+                              Kaleidoscopic Research Dreamscape
+                            </p>
                         </div>
                     </div>
                 </div>
                 
                 <div class="header-controls">
                     <button id="theme-toggle" class="control-btn" title="Toggle Theme">
-                        <i class="fas fa-palette"></i>
+                        <i class="ph ph-palette"></i>
                     </button>
                     <button id="settings-btn" class="control-btn" title="Settings">
-                        <i class="fas fa-cog"></i>
+                        <i class="ph ph-gear-six"></i>
+                    </button>
+                    <button class="control-btn" title="Open ComfyUI Art Studio" onclick="require('electron').shell.openExternal('http://127.0.0.1:8188')">
+                        <i class="ph ph-paint-bucket"></i>
                     </button>
                     <div id="api-status" class="api-status">
-                        <i class="fas fa-circle status-indicator"></i>
+                        <i class="ph ph-circle status-indicator"></i>
                         <span class="status-text">Connecting...</span>
                     </div>
                 </div>
             </div>
         </header>
 
+        <!-- Rainbow divider below header -->
+        <div class="zone-divider" style="margin:0;"></div>
+
         <!-- Main Content Area -->
-        <main class="main-content">
+        <main class="main-content action-lines">
             <!-- Sidebar Navigation -->
             <aside class="sidebar">
                 <nav class="nav-menu">
                     <button class="nav-item active" data-view="research">
-                        <i class="fas fa-search"></i>
+                        <i class="ph ph-magnifying-glass"></i>
                         <span>Research</span>
                     </button>
                     <button class="nav-item" data-view="reports">
-                        <i class="fas fa-file-alt"></i>
+                        <i class="ph ph-scroll"></i>
                         <span>Reports</span>
                     </button>
                     <button class="nav-item" data-view="data-sources">
-                        <i class="fas fa-database"></i>
+                        <i class="ph ph-stack"></i>
                         <span>Data Sources</span>
                     </button>
                     <button class="nav-item" data-view="analytics">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="ph ph-chart-line-up"></i>
                         <span>Analytics</span>
                     </button>
+                    <button class="nav-item" data-view="agents">
+                        <i class="ph ph-robot"></i>
+                        <span>Agents</span>
+                    </button>
                     <button class="nav-item" data-view="settings">
-                        <i class="fas fa-cog"></i>
+                        <i class="ph ph-gear-six"></i>
                         <span>Settings</span>
                     </button>
                 </nav>
-                
+
+                <!-- Zone divider -->
+                <div class="zone-divider"></div>
+
+                <!-- Daily Deduction Quote Panel -->
+                <div class="daily-deduction">
+                    <div class="daily-deduction-label">
+                        <span>Daily Deduction</span>
+                    </div>
+                    <div class="daily-deduction-bubble">
+                        <p id="daily-quote-text"></p>
+                        <p id="daily-quote-author"></p>
+                    </div>
+                </div>
+
+                <div class="zone-divider"></div>
+
                 <!-- Quick Actions -->
                 <div class="quick-actions">
                     <h3>Quick Actions</h3>
                     <button class="quick-action-btn" id="new-research-btn">
-                        <i class="fas fa-plus"></i>
+                        <i class="ph ph-plus-circle"></i>
                         New Research
                     </button>
                     <button class="quick-action-btn" id="recent-reports-btn">
-                        <i class="fas fa-history"></i>
+                        <i class="ph ph-clock-counter-clockwise"></i>
                         Recent Reports
                     </button>
+                </div>
+
+                <!-- Agent Status Mini-panel -->
+                <div class="zone-divider"></div>
+                <div class="agent-status-panel">
+                    <div class="agent-status-title">
+                        <i class="ph ph-cpu"></i> AI Agents
+                    </div>
+                    <div class="agent-status-grid" id="sidebar-agent-grid">
+                        <div class="agent-dot" title="Vision"><i class="ph ph-eye"></i></div>
+                        <div class="agent-dot" title="Embed"><i class="ph ph-brain"></i></div>
+                        <div class="agent-dot" title="Scientific"><i class="ph ph-flask"></i></div>
+                        <div class="agent-dot" title="Creative"><i class="ph ph-paint-brush"></i></div>
+                        <div class="agent-dot" title="Coder"><i class="ph ph-code"></i></div>
+                        <div class="agent-dot" title="Legal"><i class="ph ph-scales"></i></div>
+                        <div class="agent-dot" title="Audio"><i class="ph ph-waveform"></i></div>
+                        <div class="agent-dot" title="LongContext"><i class="ph ph-book-open-text"></i></div>
+                    </div>
                 </div>
             </aside>
 
@@ -112,7 +161,7 @@
                                        placeholder="What mysteries shall we unravel today?" 
                                        class="psychedelic-input">
                                 <button id="conduct-research-btn" class="primary-btn">
-                                    <i class="fas fa-search"></i>
+                                    <i class="ph ph-magnifying-glass"></i>
                                     Investigate
                                 </button>
                             </div>
@@ -307,6 +356,80 @@
                     </div>
                 </div>
 
+                <!-- Agents View -->
+                <div id="agents-view" class="view">
+                    <div class="view-header">
+                        <h2><i class="ph ph-robot" style="margin-right:0.5rem;"></i>AI Agents</h2>
+                        <p>8 specialized agents powering the Baker Street research ecosystem</p>
+                    </div>
+                    <div class="agents-grid">
+                        <div class="agent-card" data-agent="vision">
+                            <div class="agent-card-icon"><i class="ph ph-eye"></i></div>
+                            <h3>Vision</h3>
+                            <p>Image analysis &amp; visual pattern recognition</p>
+                            <div class="agent-status-badge" id="agent-status-vision">
+                                <i class="ph ph-circle-wavy"></i> Checking...
+                            </div>
+                        </div>
+                        <div class="agent-card" data-agent="embed">
+                            <div class="agent-card-icon"><i class="ph ph-brain"></i></div>
+                            <h3>Embed</h3>
+                            <p>Semantic embeddings &amp; similarity search</p>
+                            <div class="agent-status-badge" id="agent-status-embed">
+                                <i class="ph ph-circle-wavy"></i> Checking...
+                            </div>
+                        </div>
+                        <div class="agent-card" data-agent="scientific">
+                            <div class="agent-card-icon"><i class="ph ph-flask"></i></div>
+                            <h3>Scientific</h3>
+                            <p>Academic paper analysis &amp; ArXiv integration</p>
+                            <div class="agent-status-badge" id="agent-status-scientific">
+                                <i class="ph ph-circle-wavy"></i> Checking...
+                            </div>
+                        </div>
+                        <div class="agent-card" data-agent="creative">
+                            <div class="agent-card-icon"><i class="ph ph-paint-brush-broad"></i></div>
+                            <h3>Creative</h3>
+                            <p>Content generation &amp; narrative synthesis</p>
+                            <div class="agent-status-badge" id="agent-status-creative">
+                                <i class="ph ph-circle-wavy"></i> Checking...
+                            </div>
+                        </div>
+                        <div class="agent-card" data-agent="coder">
+                            <div class="agent-card-icon"><i class="ph ph-code-block"></i></div>
+                            <h3>Coder</h3>
+                            <p>Code analysis, generation &amp; debugging</p>
+                            <div class="agent-status-badge" id="agent-status-coder">
+                                <i class="ph ph-circle-wavy"></i> Checking...
+                            </div>
+                        </div>
+                        <div class="agent-card" data-agent="legal">
+                            <div class="agent-card-icon"><i class="ph ph-scales"></i></div>
+                            <h3>Legal</h3>
+                            <p>Document analysis &amp; regulatory research</p>
+                            <div class="agent-status-badge" id="agent-status-legal">
+                                <i class="ph ph-circle-wavy"></i> Checking...
+                            </div>
+                        </div>
+                        <div class="agent-card" data-agent="audio">
+                            <div class="agent-card-icon"><i class="ph ph-waveform"></i></div>
+                            <h3>Audio</h3>
+                            <p>Audio transcription &amp; signal processing</p>
+                            <div class="agent-status-badge" id="agent-status-audio">
+                                <i class="ph ph-circle-wavy"></i> Checking...
+                            </div>
+                        </div>
+                        <div class="agent-card" data-agent="longcontext">
+                            <div class="agent-card-icon"><i class="ph ph-book-open-text"></i></div>
+                            <h3>LongContext</h3>
+                            <p>Extended document reasoning &amp; summarisation</p>
+                            <div class="agent-status-badge" id="agent-status-longcontext">
+                                <i class="ph ph-circle-wavy"></i> Checking...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Settings View -->
                 <div id="settings-view" class="view">
                     <div class="view-header">
@@ -422,5 +545,6 @@
     <script src="scripts/api-client.js"></script>
     <script src="scripts/ui-manager.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="scripts/quotes.js"></script>
 </body>
 </html>

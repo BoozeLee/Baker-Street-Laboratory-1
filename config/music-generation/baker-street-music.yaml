@@ -1,0 +1,85 @@
+# Baker Street Laboratory - Music Generation Configuration
+# Prompts and settings for psychedelic detective atmosphere
+
+music_styles:
+  psychedelic_ambient:
+    prompt: "ambient psychedelic music, dreamy synthesizers, ethereal pads, mysterious atmosphere, detective investigation mood"
+    duration: 60
+    
+  detective_noir:
+    prompt: "film noir detective music, jazz saxophone, dark piano, mysterious bass, urban night atmosphere"
+    duration: 45
+    
+  research_focus:
+    prompt: "focused study music, minimal ambient, soft electronic textures, concentration enhancing, laboratory atmosphere"
+    duration: 120
+    
+  investigation_tension:
+    prompt: "suspenseful investigation music, building tension, mysterious strings, detective thriller soundtrack"
+    duration: 30
+    
+  psychedelic_discovery:
+    prompt: "psychedelic discovery music, colorful synthesizers, evolving textures, eureka moment, scientific breakthrough"
+    duration: 45
+    
+  data_analysis:
+    prompt: "data analysis background music, rhythmic patterns, digital textures, computational thinking, algorithmic beats"
+    duration: 90
+
+sound_effects:
+  typing:
+    description: "keyboard typing sounds, research work, data entry"
+    
+  page_turn:
+    description: "paper pages turning, book research, document review"
+    
+  laboratory:
+    description: "laboratory equipment sounds, beakers, scientific instruments"
+    
+  discovery:
+    description: "eureka moment sound, discovery chime, breakthrough notification"
+    
+  investigation:
+    description: "detective investigation sounds, magnifying glass, evidence examination"
+    
+  ambient_lab:
+    description: "ambient laboratory sounds, quiet humming, scientific atmosphere"
+
+voice_presets:
+  detective_narrator: "v2/en_speaker_6"  # Deep, authoritative voice
+  scientist: "v2/en_speaker_3"           # Clear, analytical voice
+  assistant: "v2/en_speaker_1"           # Friendly, helpful voice
+  mysterious: "v2/en_speaker_9"          # Mysterious, atmospheric voice
+
+usage_scenarios:
+  morning_research:
+    music: "research_focus"
+    duration: 120
+    description: "Background music for morning research sessions"
+    
+  investigation_phase:
+    music: "detective_noir"
+    duration: 45
+    description: "Music for active investigation and analysis"
+    
+  data_processing:
+    music: "data_analysis"
+    duration: 90
+    description: "Rhythmic music for data processing tasks"
+    
+  breakthrough_moment:
+    music: "psychedelic_discovery"
+    duration: 30
+    description: "Celebratory music for research breakthroughs"
+    
+  ambient_work:
+    music: "psychedelic_ambient"
+    duration: 60
+    description: "General ambient music for focused work"
+
+settings:
+  default_model_size: "medium"
+  default_duration: 60
+  output_format: "wav"
+  sample_rate: 32000
+  normalize_audio: true

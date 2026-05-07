@@ -1,224 +1,438 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baker Street Laboratory</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baker Street Laboratory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            background:
-                linear-gradient(rgba(26, 15, 8, 0.8), rgba(44, 24, 16, 0.8), rgba(139, 69, 19, 0.8)),
-                url('assets/images/backgrounds/detective_bg.png') center/cover no-repeat;
-            color: #F5F5DC;
-            font-family: 'Georgia', serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
+    body {
+      background: #0A0A0A;
+      color: #F5F5DC;
+      font-family: 'Playfair Display', serif;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
 
-        .splash-container {
-            text-align: center;
-            z-index: 10;
-            position: relative;
-        }
+    /* ── Halftone background ── */
+    .halftone-bg {
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(218,165,32,0.12) 1.5px, transparent 1.5px);
+      background-size: 9px 9px;
+      z-index: 0;
+    }
 
-        .splash-logo {
-            margin-bottom: 2rem;
-        }
+    /* ── Rotating action lines ── */
+    .action-bg {
+      position: fixed;
+      inset: -100%;
+      background: repeating-conic-gradient(
+        from 0deg at 50% 50%,
+        rgba(255,215,0,0.04) 0deg 2deg,
+        transparent 2deg 10deg
+      );
+      animation: action-spin 50s linear infinite;
+      z-index: 0;
+    }
 
-        .splash-logo-image {
-            width: 120px;
-            height: 120px;
-            object-fit: contain;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(218, 165, 32, 0.6);
-            animation: logo-pulse 3s ease-in-out infinite;
-        }
+    @keyframes action-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
 
-        @keyframes logo-pulse {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 30px rgba(218, 165, 32, 0.6);
-            }
-            50% {
-                transform: scale(1.05);
-                box-shadow: 0 0 40px rgba(218, 165, 32, 0.9);
-            }
-        }
+    /* ── Neon blobs ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      animation: blob-drift 8s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+    .blob-pink  { width: 380px; height: 380px; background: #FF1493; top: -80px; right: -60px; animation-delay: 0s; }
+    .blob-cyan  { width: 320px; height: 320px; background: #00CED1; bottom: -60px; left: -40px; animation-delay: 2s; }
+    .blob-gold  { width: 260px; height: 260px; background: #FFD700; top: 40%; left: 40%; animation-delay: 4s; }
 
-        .logo {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #DAA520;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            margin-bottom: 1rem;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
+    @keyframes blob-drift {
+      from { transform: scale(1) translate(0, 0); }
+      to   { transform: scale(1.15) translate(20px, -20px); }
+    }
 
-        .subtitle {
-            font-size: 1.2rem;
-            color: #D3C7A8;
-            font-style: italic;
-            margin-bottom: 2rem;
-            opacity: 0.8;
-        }
+    /* ── Comic border frame ── */
+    .comic-frame {
+      position: fixed;
+      inset: 8px;
+      border: 4px solid #FFD700;
+      box-shadow: 0 0 0 8px #000, 0 0 0 12px #FF1493, inset 0 0 30px rgba(255,215,0,0.1);
+      z-index: 1;
+      pointer-events: none;
+    }
 
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(218, 165, 32, 0.3);
-            border-top: 4px solid #DAA520;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
+    /* corner ornaments */
+    .comic-frame::before,
+    .comic-frame::after {
+      content: '◆';
+      position: absolute;
+      color: #FFD700;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .comic-frame::before { top: -12px; left: -10px; }
+    .comic-frame::after  { bottom: -12px; right: -10px; }
 
-        .loading-text {
-            font-size: 1rem;
-            color: #D3C7A8;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
+    /* ── Top & bottom comic bands ── */
+    .top-band {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      background: #FF1493;
+      border: 3px solid #000;
+      padding: 0.3rem 1rem;
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: #000;
+      z-index: 5;
+      box-shadow: 3px 3px 0 #000;
+    }
 
-        .background-particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
+    .bottom-band {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: #00CED1;
+      border: 3px solid #000;
+      padding: 0.3rem 1rem;
+      text-align: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #000;
+      z-index: 5;
+      box-shadow: 3px 3px 0 #000;
+      font-family: 'JetBrains Mono', monospace;
+    }
 
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #DAA520;
-            border-radius: 50%;
-            opacity: 0.6;
-            animation: float 6s ease-in-out infinite;
-        }
+    /* ── Main splash container ── */
+    .splash-container {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 60px 40px 70px;
+      gap: 0;
+    }
 
-        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
-        .particle:nth-child(2) { left: 20%; animation-delay: 1s; }
-        .particle:nth-child(3) { left: 30%; animation-delay: 2s; }
-        .particle:nth-child(4) { left: 40%; animation-delay: 3s; }
-        .particle:nth-child(5) { left: 50%; animation-delay: 4s; }
-        .particle:nth-child(6) { left: 60%; animation-delay: 5s; }
-        .particle:nth-child(7) { left: 70%; animation-delay: 0.5s; }
-        .particle:nth-child(8) { left: 80%; animation-delay: 1.5s; }
-        .particle:nth-child(9) { left: 90%; animation-delay: 2.5s; }
+    /* ── Holmes CSS silhouette ── */
+    .holmes-wrap {
+      position: relative;
+      margin-bottom: 1.5rem;
+      animation: holmes-float 4s ease-in-out infinite;
+    }
 
-        @keyframes glow {
-            0%, 100% { 
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 0 0 10px #DAA520; 
-            }
-            50% { 
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 0 0 20px #DAA520, 0 0 30px #DAA520; 
-            }
-        }
+    @keyframes holmes-float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+    /* Burst behind Holmes */
+    .holmes-burst {
+      position: absolute;
+      inset: -40px;
+      clip-path: polygon(
+        50% 0%,  61% 20%, 79% 6%,  73% 29%, 98% 31%,
+        80% 46%, 98% 67%, 74% 66%, 78% 91%,
+        56% 77%, 50% 100%,44% 77%, 22% 91%,
+        26% 66%, 2%  67%, 20% 46%, 2%  31%,
+        27% 29%, 21% 6%,  39% 20%
+      );
+      background: conic-gradient(from 0deg, #FF1493, #FFD700, #00CED1, #8A2BE2, #FF4500, #FF1493);
+      animation: burst-spin 8s linear infinite;
+      opacity: 0.75;
+      z-index: -1;
+    }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
+    @keyframes burst-spin {
+      from { transform: rotate(0deg) scale(1); }
+      50%  { transform: rotate(180deg) scale(1.08); }
+      to   { transform: rotate(360deg) scale(1); }
+    }
 
-        @keyframes float {
-            0%, 100% { 
-                transform: translateY(100vh) scale(0); 
-                opacity: 0; 
-            }
-            10%, 90% { 
-                opacity: 0.6; 
-            }
-            50% { 
-                transform: translateY(-10px) scale(1); 
-                opacity: 1; 
-            }
-        }
+    /* Holmes figure from main logo */
+    .holmes-image {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 4px solid #000;
+      box-shadow: 5px 5px 0 #000, 0 0 30px rgba(255,215,0,0.6);
+      position: relative;
+      z-index: 1;
+      background: #1A0F08;
+      animation: logo-glow 3s ease-in-out infinite alternate;
+    }
 
-        .version {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            font-size: 0.8rem;
-            color: #8B4513;
-            opacity: 0.7;
-        }
+    @keyframes logo-glow {
+      from { box-shadow: 5px 5px 0 #000, 0 0 20px rgba(255,215,0,0.5); }
+      to   { box-shadow: 5px 5px 0 #000, 0 0 40px rgba(255,20,147,0.6), 0 0 60px rgba(255,215,0,0.3); }
+    }
 
-        .tagline {
-            font-size: 0.9rem;
-            color: #DAA520;
-            margin-top: 1rem;
-            opacity: 0.9;
-            font-style: italic;
-        }
-    </style>
+    /* pipe smoke rings above logo */
+    .smoke-ring {
+      position: absolute;
+      top: -18px;
+      right: 10px;
+      color: rgba(200,200,200,0.5);
+      animation: smoke-rise 3s ease-out infinite;
+    }
+    .smoke-ring:nth-child(2) { top: -36px; right: 18px; font-size: 0.7rem; animation-delay: 1.5s; }
+    .smoke-ring:nth-child(3) { top: -54px; right: 6px;  font-size: 0.5rem; animation-delay: 0.8s; }
+
+    @keyframes smoke-rise {
+      0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+      30%  { opacity: 0.7; }
+      100% { opacity: 0; transform: translateY(-30px) scale(1.4); }
+    }
+
+    /* ── Title block ── */
+    .title-block {
+      text-align: center;
+      margin-bottom: 1.8rem;
+    }
+
+    .vol-label {
+      display: inline-block;
+      background: #FF1493;
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      padding: 0.2rem 0.8rem;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0 #000;
+      margin-bottom: 0.6rem;
+    }
+
+    .main-title {
+      font-size: 3rem;
+      font-weight: 900;
+      color: #FFD700;
+      -webkit-text-stroke: 3px #000;
+      text-shadow:
+        5px 5px 0 #000,
+        0 0 24px #FFD700,
+        0 0 50px #FF1493;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      line-height: 1;
+      animation: title-glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes title-glow {
+      from { text-shadow: 5px 5px 0 #000, 0 0 20px #FFD700, 0 0 40px #FF1493; color: #FFD700; }
+      to   { text-shadow: 5px 5px 0 #000, 0 0 32px #FFD700, 0 0 60px #FF1493, 0 0 80px #00CED1; color: #FFF500; }
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #D3C7A8;
+      font-style: italic;
+      margin-top: 0.5rem;
+      letter-spacing: 1px;
+      opacity: 0.85;
+    }
+
+    /* ── Loading speech bubble ── */
+    .loading-bubble {
+      position: relative;
+      background: #1A0F08;
+      border: 3px solid #FFD700;
+      border-radius: 14px 14px 14px 4px;
+      padding: 0.9rem 1.4rem;
+      box-shadow: 4px 4px 0 #000, 0 0 16px rgba(255,215,0,0.25);
+      min-width: 320px;
+      text-align: center;
+      margin-bottom: 1.2rem;
+      overflow: hidden;
+    }
+
+    /* halftone inside bubble */
+    .loading-bubble::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(218,165,32,0.07) 1px, transparent 1px);
+      background-size: 6px 6px;
+      pointer-events: none;
+    }
+
+    .loading-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: #F5F5DC;
+      animation: text-pulse 1.8s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes text-pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.65; }
+    }
+
+    /* ── Psychedelic spinner ── */
+    .psycho-spinner {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 5px solid transparent;
+      border-top-color:    #FF1493;
+      border-right-color:  #FFD700;
+      border-bottom-color: #00CED1;
+      border-left-color:   #8A2BE2;
+      animation: psycho-spin 0.9s linear infinite;
+      box-shadow: 0 0 16px rgba(255,20,147,0.5), 0 0 30px rgba(255,215,0,0.3);
+    }
+
+    @keyframes psycho-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ── Rainbow progress bar ── */
+    .progress-track {
+      width: 340px;
+      height: 10px;
+      background: #000;
+      border: 2px solid #FFD700;
+      border-radius: 3px;
+      overflow: hidden;
+      box-shadow: 3px 3px 0 #000;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #FF1493, #FFD700, #00CED1, #8A2BE2);
+      background-size: 200% 100%;
+      animation: progress-load 3s ease-out forwards, rainbow-shift 1s linear infinite;
+    }
+
+    @keyframes progress-load {
+      from { width: 0%; }
+      to   { width: 100%; }
+    }
+
+    @keyframes rainbow-shift {
+      from { background-position: 0% 0%; }
+      to   { background-position: 200% 0%; }
+    }
+
+    /* ── Version tag ── */
+    .version-tag {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: #8B4513;
+      z-index: 5;
+    }
+  </style>
 </head>
 <body>
-    <div class="background-particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+  <div class="halftone-bg"></div>
+  <div class="action-bg"></div>
+  <div class="blob blob-pink"></div>
+  <div class="blob blob-cyan"></div>
+  <div class="blob blob-gold"></div>
+  <div class="comic-frame"></div>
+
+  <div class="top-band">Baker Street Laboratory &nbsp;·&nbsp; Vol. 1 &nbsp;·&nbsp; Psychedelic Detective Edition</div>
+
+  <div class="splash-container">
+    <!-- Holmes logo with burst -->
+    <div class="holmes-wrap">
+      <div class="holmes-burst"></div>
+      <span class="smoke-ring" style="font-size:0.9rem;">○</span>
+      <span class="smoke-ring">○</span>
+      <span class="smoke-ring">○</span>
+      <img src="assets/images/ui/main_logo.png" alt="Baker Street Laboratory" class="holmes-image">
     </div>
 
-    <div class="splash-container">
-        <div class="splash-logo">
-            <img src="assets/images/ui/main_logo.png" alt="Baker Street Laboratory" class="splash-logo-image">
-        </div>
-        <div class="logo">Baker Street Laboratory</div>
-        <div class="subtitle">AI-Augmented Research Framework</div>
-        
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Initializing kaleidoscopic research environment...</div>
-        
-        <div class="tagline">Traversing dreamscapes of knowledge with detective precision</div>
+    <!-- Title -->
+    <div class="title-block">
+      <div class="vol-label">Autonomous AI Research</div>
+      <h1 class="main-title">Baker Street<br>Laboratory</h1>
+      <p class="subtitle">Kaleidoscopic Research Dreamscape</p>
     </div>
 
-    <div class="version">v1.0.0</div>
+    <!-- Loading speech bubble -->
+    <div class="loading-bubble">
+      <div class="loading-text" id="splash-loading-text">
+        Initializing psychedelic research modules...
+      </div>
+    </div>
 
-    <script>
-        // Simulate loading progress
-        const loadingTexts = [
-            'Initializing kaleidoscopic research environment...',
-            'Loading psychedelic detective modules...',
-            'Connecting to research APIs...',
-            'Preparing visual effects...',
-            'Ready to investigate mysteries!'
-        ];
+    <!-- Spinner + progress -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:0.9rem;">
+      <div class="psycho-spinner"></div>
+      <div class="progress-track">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+  </div>
 
-        let currentTextIndex = 0;
-        const loadingTextElement = document.querySelector('.loading-text');
+  <div class="bottom-band" id="splash-status">Connecting to Baker Street API...</div>
+  <div class="version-tag">v1.0.0</div>
 
-        const updateLoadingText = () => {
-            if (currentTextIndex < loadingTexts.length - 1) {
-                currentTextIndex++;
-                loadingTextElement.textContent = loadingTexts[currentTextIndex];
-                setTimeout(updateLoadingText, 600);
-            }
-        };
+  <script>
+    const loadingTexts = [
+      'Initializing psychedelic research modules...',
+      'Loading 8 AI agents into the mind palace...',
+      'Calibrating the kaleidoscopic lens...',
+      'Connecting research APIs...',
+      'Polishing the magnifying glass...',
+      'The game is afoot, Watson!'
+    ];
 
-        setTimeout(updateLoadingText, 600);
-    </script>
+    const statusTexts = [
+      'Connecting to Baker Street API...',
+      'Summoning the Polymorphic Framework...',
+      'Warming up neural pathways...',
+      'Almost ready — the game is afoot!'
+    ];
+
+    let textIdx = 0;
+    const loadingEl = document.getElementById('splash-loading-text');
+    const statusEl  = document.getElementById('splash-status');
+
+    const tick = () => {
+      if (textIdx < loadingTexts.length - 1) {
+        textIdx++;
+        loadingEl.textContent = loadingTexts[textIdx];
+        statusEl.textContent  = statusTexts[Math.min(textIdx, statusTexts.length - 1)];
+        setTimeout(tick, 520);
+      }
+    };
+
+    setTimeout(tick, 520);
+  </script>
 </body>
 </html>

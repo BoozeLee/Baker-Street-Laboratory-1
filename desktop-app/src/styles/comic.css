@@ -1,0 +1,975 @@
+/* Baker Street Laboratory — Comic Book & Psychedelic Art Styles */
+/* 2D Comic Book Sherlock Holmes aesthetic with psychedelic neon palette */
+
+/* ============================================================
+   HALFTONE PATTERNS (Ben-Day dots — classic comic print effect)
+   ============================================================ */
+.halftone-sm {
+  background-image: radial-gradient(circle, rgba(0,0,0,0.55) 1px, transparent 1px);
+  background-size: 6px 6px;
+}
+.halftone-md {
+  background-image: radial-gradient(circle, rgba(0,0,0,0.45) 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+}
+.halftone-lg {
+  background-image: radial-gradient(circle, rgba(0,0,0,0.35) 2px, transparent 2px);
+  background-size: 16px 16px;
+}
+.halftone-gold {
+  background-image: radial-gradient(circle, rgba(218,165,32,0.35) 1.5px, transparent 1.5px);
+  background-size: 8px 8px;
+}
+.halftone-pink {
+  background-image: radial-gradient(circle, rgba(255,20,147,0.3) 1.5px, transparent 1.5px);
+  background-size: 8px 8px;
+}
+.halftone-cyan {
+  background-image: radial-gradient(circle, rgba(0,206,209,0.3) 1.5px, transparent 1.5px);
+  background-size: 8px 8px;
+}
+
+/* ============================================================
+   COMIC PANEL BORDERS
+   ============================================================ */
+.comic-panel {
+  border: 4px solid #000;
+  box-shadow: 6px 6px 0 #000;
+  position: relative;
+  background-clip: padding-box;
+}
+
+.comic-panel-gold {
+  border: 4px solid #FFD700;
+  box-shadow: 6px 6px 0 #000, 0 0 18px rgba(255,215,0,0.4);
+}
+
+.comic-panel-neon {
+  border: 4px solid #FF1493;
+  box-shadow: 5px 5px 0 #000, 0 0 20px rgba(255,20,147,0.5), 0 0 40px rgba(255,20,147,0.2);
+}
+
+.comic-panel-cyan {
+  border: 4px solid #00CED1;
+  box-shadow: 5px 5px 0 #000, 0 0 20px rgba(0,206,209,0.5);
+}
+
+.comic-panel-purple {
+  border: 4px solid #8A2BE2;
+  box-shadow: 5px 5px 0 #000, 0 0 20px rgba(138,43,226,0.5);
+}
+
+/* ============================================================
+   SPEECH BUBBLES
+   ============================================================ */
+.speech-bubble {
+  position: relative;
+  background: #FFF9C4;
+  border: 3px solid #000;
+  border-radius: 20px;
+  padding: 0.9rem 1.3rem;
+  color: #000;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  box-shadow: 4px 4px 0 #000;
+  line-height: 1.4;
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -22px;
+  left: 28px;
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 2px solid transparent;
+  border-top: 22px solid #000;
+}
+
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  left: 31px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 1px solid transparent;
+  border-top: 17px solid #FFF9C4;
+  z-index: 1;
+}
+
+/* Psychedelic speech bubble */
+.speech-bubble-psychedelic {
+  position: relative;
+  background: linear-gradient(135deg, #FF1493, #8A2BE2);
+  border: 3px solid #000;
+  border-radius: 16px;
+  padding: 0.9rem 1.3rem;
+  color: #fff;
+  box-shadow: 4px 4px 0 #000, 0 0 20px rgba(255,20,147,0.4);
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.speech-bubble-psychedelic::after {
+  content: '';
+  position: absolute;
+  bottom: -22px;
+  left: 28px;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 2px solid transparent;
+  border-top: 22px solid #000;
+}
+
+.speech-bubble-psychedelic::before {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 31px;
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 1px solid transparent;
+  border-top: 16px solid #8A2BE2;
+  z-index: 1;
+}
+
+/* ============================================================
+   BURST / EXPLOSION SHAPES
+   ============================================================ */
+.burst-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.burst-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  clip-path: polygon(
+    50% 0%,   61% 22%,  79% 8%,   73% 31%,  97% 33%,
+    80% 47%,  97% 68%,  74% 67%,  78% 92%,
+    56% 77%,  50% 100%, 44% 77%,  22% 92%,
+    26% 67%,  3%  68%,  20% 47%,  3%  33%,
+    27% 31%,  21% 8%,   39% 22%
+  );
+  animation: burst-pulse 2.5s ease-in-out infinite;
+  z-index: -1;
+}
+
+.burst-gold::before  { background: #FFD700; }
+.burst-pink::before  { background: #FF1493; }
+.burst-cyan::before  { background: #00CED1; }
+.burst-purple::before { background: #8A2BE2; }
+
+@keyframes burst-pulse {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  33%       { transform: scale(1.06) rotate(4deg); }
+  66%       { transform: scale(0.97) rotate(-3deg); }
+}
+
+/* ============================================================
+   ACTION / SPEED LINES
+   ============================================================ */
+.action-lines {
+  position: relative;
+  overflow: hidden;
+}
+
+.action-lines::before {
+  content: '';
+  position: absolute;
+  inset: -100%;
+  background: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(255,215,0,0.07) 0deg 2deg,
+    transparent 2deg 9deg
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: action-spin 40s linear infinite;
+}
+
+@keyframes action-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.speed-lines {
+  position: relative;
+  overflow: hidden;
+}
+
+.speed-lines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px, transparent 5px,
+    rgba(255,215,0,0.04) 5px, rgba(255,215,0,0.04) 7px
+  );
+  pointer-events: none;
+  animation: speed-move 0.6s linear infinite;
+}
+
+@keyframes speed-move {
+  from { background-position: 0 0; }
+  to   { background-position: 24px 0; }
+}
+
+/* ============================================================
+   INK OUTLINE TEXT
+   ============================================================ */
+.ink-title {
+  -webkit-text-stroke: 2px #000;
+  paint-order: stroke fill;
+}
+
+/* ============================================================
+   ONOMATOPOEIA LABELS
+   ============================================================ */
+.pow-label {
+  display: inline-block;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  color: #FF1493;
+  -webkit-text-stroke: 2px #000;
+  text-shadow: 3px 3px 0 #000;
+  transform: rotate(-8deg);
+  animation: pow-wobble 3s ease-in-out infinite;
+  user-select: none;
+}
+
+@keyframes pow-wobble {
+  0%, 100% { transform: rotate(-8deg) scale(1); }
+  50%       { transform: rotate(-4deg) scale(1.06); }
+}
+
+/* ============================================================
+   PIPE SMOKE
+   ============================================================ */
+.pipe-smoke-ring {
+  display: inline-block;
+  position: relative;
+}
+
+.pipe-smoke-ring::before,
+.pipe-smoke-ring::after {
+  content: '○';
+  position: absolute;
+  color: rgba(210,210,210,0.55);
+  animation: smoke-rise 2.8s ease-out infinite;
+}
+
+.pipe-smoke-ring::before {
+  top: -28px; left: 4px;
+  font-size: 0.7rem;
+  animation-delay: 0s;
+}
+
+.pipe-smoke-ring::after {
+  top: -50px; left: -4px;
+  font-size: 0.5rem;
+  animation-delay: 1.4s;
+}
+
+@keyframes smoke-rise {
+  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+  25%  { opacity: 0.8; }
+  100% { opacity: 0; transform: translateY(-36px) scale(1.6); }
+}
+
+/* ============================================================
+   COMIC HEADER BAND (volume/issue label)
+   ============================================================ */
+.comic-header-band {
+  background: #FF1493;
+  border-top: 4px solid #000;
+  border-bottom: 4px solid #000;
+  padding: 0.3rem 1rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: #000;
+  text-align: center;
+}
+
+/* ============================================================
+   NEON COMIC TITLE
+   ============================================================ */
+.neon-comic-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  color: #FFD700;
+  -webkit-text-stroke: 3px #000;
+  text-shadow:
+    4px 4px 0 #000,
+    0 0 20px #FFD700,
+    0 0 40px #FF1493,
+    0 0 60px #00CED1;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: neon-comic-glow 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes neon-comic-glow {
+  from {
+    text-shadow: 4px 4px 0 #000, 0 0 18px #FFD700, 0 0 28px #FF1493;
+    color: #FFD700;
+  }
+  to {
+    text-shadow: 4px 4px 0 #000, 0 0 28px #FFD700, 0 0 48px #FF1493, 0 0 70px #00CED1;
+    color: #FFF500;
+  }
+}
+
+/* ============================================================
+   PSYCHEDELIC RAINBOW DIVIDER
+   ============================================================ */
+.zone-divider {
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    #FF1493 0%, #FF4500 16%, #FFD700 33%,
+    #32CD32 50%, #00CED1 67%, #8A2BE2 84%, #FF1493 100%
+  );
+  border-top: 2px solid #000;
+  border-bottom: 2px solid #000;
+  margin: 0.75rem 0;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   DAILY DEDUCTION QUOTE PANEL
+   ============================================================ */
+.daily-deduction {
+  position: relative;
+  z-index: 2;
+  margin: 0.8rem 0 1rem;
+}
+
+.daily-deduction-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.daily-deduction-label span {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #000;
+  background: #FFD700;
+  padding: 0.2rem 0.6rem;
+  border: 2px solid #000;
+  display: inline-block;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.daily-deduction-bubble {
+  background: linear-gradient(135deg, #1A0F08 0%, #2C1810 100%);
+  border: 3px solid #FFD700;
+  border-radius: 12px 12px 12px 4px;
+  padding: 0.8rem 0.9rem 0.7rem 1.1rem;
+  position: relative;
+  box-shadow: 4px 4px 0 #000, 0 0 14px rgba(255,215,0,0.25);
+  overflow: hidden;
+}
+
+/* halftone overlay */
+.daily-deduction-bubble::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(218,165,32,0.07) 1px, transparent 1px);
+  background-size: 6px 6px;
+  pointer-events: none;
+}
+
+/* big open-quote decoration */
+.daily-deduction-bubble::after {
+  content: '\201C';
+  position: absolute;
+  top: -4px;
+  left: 6px;
+  font-size: 3.5rem;
+  color: rgba(255,215,0,0.2);
+  font-family: 'Playfair Display', serif;
+  line-height: 1;
+  pointer-events: none;
+}
+
+#daily-quote-text {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 0.82rem;
+  color: #F5F5DC;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+  padding-top: 0.2rem;
+}
+
+#daily-quote-author {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  color: #DAA520;
+  margin-top: 0.4rem;
+  text-align: right;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   COMIC NAV ITEMS
+   ============================================================ */
+.nav-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(218,165,32,0.07) 1px, transparent 1px);
+  background-size: 7px 7px;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+
+.nav-item:hover::before,
+.nav-item.active::before {
+  opacity: 1;
+}
+
+.nav-item.active {
+  border: 2px solid #FFD700 !important;
+  box-shadow: 3px 3px 0 #000;
+}
+
+/* ============================================================
+   ANALYTICS CARD — COMIC VERSION
+   ============================================================ */
+.analytics-card {
+  border: 3px solid #000 !important;
+  box-shadow: 5px 5px 0 #FF1493 !important;
+  background: #0D0D0D !important;
+  background-image: radial-gradient(circle, rgba(255,215,0,0.08) 1.5px, transparent 1.5px) !important;
+  background-size: 10px 10px !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.analytics-card .metric-value {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 900 !important;
+  font-size: 3rem !important;
+  color: #FFD700 !important;
+  -webkit-text-stroke: 1.5px #000;
+  text-shadow: 3px 3px 0 #000 !important;
+}
+
+/* ============================================================
+   REPORT CARD — COMIC VERSION
+   ============================================================ */
+.report-card {
+  border: 3px solid #000 !important;
+  box-shadow: 4px 4px 0 #8A2BE2 !important;
+  background: #0A0A0A !important;
+  background-image: radial-gradient(circle, rgba(138,43,226,0.1) 1px, transparent 1px) !important;
+  background-size: 8px 8px !important;
+}
+
+.report-card:hover {
+  box-shadow: 4px 4px 0 #FF1493 !important;
+  transform: translate(-2px, -2px) !important;
+}
+
+/* ============================================================
+   DATA SOURCE CARD — COMIC
+   ============================================================ */
+.data-source-card {
+  border: 3px solid #000 !important;
+  box-shadow: 5px 5px 0 #00CED1 !important;
+  background: #0A0A0A !important;
+  background-image: radial-gradient(circle, rgba(0,206,209,0.08) 1px, transparent 1px) !important;
+  background-size: 8px 8px !important;
+}
+
+.data-source-card:hover {
+  box-shadow: 5px 5px 0 #FF1493 !important;
+  transform: translate(-2px, -2px) !important;
+}
+
+/* ============================================================
+   SETTINGS SECTION — COMIC
+   ============================================================ */
+.settings-section {
+  border: 3px solid #DAA520 !important;
+  box-shadow: 4px 4px 0 #000 !important;
+}
+
+/* ============================================================
+   INVESTIGATE BUTTON (replaces primary-btn visual)
+   ============================================================ */
+.primary-btn {
+  background: #FF1493 !important;
+  border: 3px solid #000 !important;
+  box-shadow: 4px 4px 0 #000 !important;
+  color: #fff !important;
+  -webkit-text-stroke: 0px;
+  text-shadow: 1px 1px 0 #000;
+  border-radius: 4px !important;
+  transition: transform 0.08s ease, box-shadow 0.08s ease !important;
+}
+
+.primary-btn:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0 #000 !important;
+  background: #FF4499 !important;
+}
+
+.primary-btn:active {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0 #000 !important;
+}
+
+/* ============================================================
+   SECONDARY BUTTON — COMIC
+   ============================================================ */
+.secondary-btn {
+  border: 3px solid #000 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  border-radius: 4px !important;
+  transition: transform 0.08s ease, box-shadow 0.08s ease !important;
+}
+
+.secondary-btn:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 5px 5px 0 #000 !important;
+}
+
+.secondary-btn:active {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 1px 1px 0 #000 !important;
+}
+
+/* ============================================================
+   INPUT FIELDS — COMIC STYLE
+   ============================================================ */
+.psychedelic-input,
+.psychedelic-select {
+  border: 3px solid #8B4513 !important;
+  border-radius: 4px !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+.psychedelic-input:focus,
+.psychedelic-select:focus {
+  border-color: #FFD700 !important;
+  box-shadow: 3px 3px 0 #000, 0 0 12px rgba(255,215,0,0.3) !important;
+}
+
+/* ============================================================
+   MODAL — COMIC
+   ============================================================ */
+.modal-content {
+  border: 4px solid #FFD700 !important;
+  box-shadow: 8px 8px 0 #000, 0 0 30px rgba(255,215,0,0.3) !important;
+  border-radius: 8px !important;
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #FF1493, #8A2BE2) !important;
+  border-bottom: 3px solid #000 !important;
+}
+
+.modal-header h3 {
+  color: #fff !important;
+  -webkit-text-stroke: 0.5px #000;
+}
+
+/* ============================================================
+   TOAST — COMIC
+   ============================================================ */
+.toast {
+  border: 3px solid #000 !important;
+  box-shadow: 4px 4px 0 #000 !important;
+  border-radius: 4px !important;
+}
+
+.toast-success  { border-color: #32CD32 !important; box-shadow: 4px 4px 0 #32CD32 !important; }
+.toast-error    { border-color: #FF1493 !important; box-shadow: 4px 4px 0 #FF1493 !important; }
+.toast-warning  { border-color: #FFD700 !important; box-shadow: 4px 4px 0 #FFD700 !important; }
+.toast-info     { border-color: #00CED1 !important; box-shadow: 4px 4px 0 #00CED1 !important; }
+
+/* ============================================================
+   HOLMES MAGNIFYING GLASS SPINNER
+   ============================================================ */
+.holmes-spinner {
+  display: inline-block;
+  animation: magnify-swing 2.2s ease-in-out infinite;
+  transform-origin: 65% 65%;
+  font-size: 1.4rem;
+}
+
+@keyframes magnify-swing {
+  0%, 100% { transform: rotate(-22deg); }
+  50%       { transform: rotate(22deg); }
+}
+
+/* ============================================================
+   PSYCHEDELIC SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #000; border-left: 2px solid #FFD700; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #FF1493, #8A2BE2, #00CED1);
+  border: 1px solid #000;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #FFD700, #FF1493);
+}
+
+/* ============================================================
+   RESEARCH PROGRESS — COMIC STEPS
+   ============================================================ */
+.research-progress {
+  border: 3px solid #000 !important;
+  box-shadow: 5px 5px 0 #FF1493 !important;
+}
+
+.step.active {
+  border: 2px solid #FFD700 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  background: rgba(255,215,0,0.1) !important;
+}
+
+/* ============================================================
+   RESEARCH RESULTS — COMIC
+   ============================================================ */
+.research-results {
+  border: 3px solid #FFD700 !important;
+  box-shadow: 6px 6px 0 #000 !important;
+}
+
+/* ============================================================
+   QUICK ACTION BUTTONS — COMIC
+   ============================================================ */
+.quick-action-btn {
+  border: 3px solid #000 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  border-radius: 4px !important;
+  transition: transform 0.08s, box-shadow 0.08s !important;
+}
+
+.quick-action-btn:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 5px 5px 0 #000 !important;
+}
+
+/* ============================================================
+   SIDEBAR BACKGROUND — COMIC TEXTURE
+   ============================================================ */
+.sidebar {
+  background: linear-gradient(180deg, rgba(13,13,13,0.97), rgba(26,15,8,0.97)) !important;
+  border-right: 4px solid #FFD700 !important;
+  box-shadow: 4px 0 0 #000 !important;
+}
+
+/* halftone on sidebar */
+.sidebar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(218,165,32,0.05) 1px, transparent 1px);
+  background-size: 8px 8px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================================
+   HEADER — COMIC BAND STYLE
+   ============================================================ */
+.app-header {
+  border-bottom: 4px solid #000 !important;
+  background: linear-gradient(135deg, #1A0F08 0%, #2C1810 40%, #3A2818 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* halftone overlay on header */
+.app-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,215,0,0.06) 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.header-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================================
+   APP TITLE — NEON COMIC
+   ============================================================ */
+.app-title {
+  font-weight: 900 !important;
+  -webkit-text-stroke: 1.5px #8B4513;
+  text-shadow:
+    3px 3px 0 #000,
+    0 0 15px rgba(218,165,32,0.6),
+    0 0 30px rgba(255,20,147,0.3) !important;
+}
+
+/* ============================================================
+   CONTROL BUTTONS — COMIC
+   ============================================================ */
+.control-btn {
+  border: 2px solid #FFD700 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+  border-radius: 4px !important;
+  transition: transform 0.08s, box-shadow 0.08s !important;
+}
+
+.control-btn:hover {
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 4px 4px 0 #000 !important;
+}
+
+/* ============================================================
+   VIEW HEADER — COMIC TITLE
+   ============================================================ */
+.view-header h2 {
+  -webkit-text-stroke: 1px #8B4513;
+  text-shadow: 3px 3px 0 #000, 0 0 20px rgba(218,165,32,0.4) !important;
+}
+
+/* ============================================================
+   CHECKBOX — COMIC
+   ============================================================ */
+.checkmark {
+  border: 2px solid #000 !important;
+  box-shadow: 2px 2px 0 #000;
+  border-radius: 2px !important;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+  background: #FFD700 !important;
+  border-color: #000 !important;
+}
+
+/* ============================================================
+   PHOSPHOR ICONS — SIZE NORMALISATION
+   ============================================================ */
+.ph {
+  font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-item .ph   { font-size: 1.3rem; width: 22px; }
+.control-btn .ph { font-size: 1.1rem; }
+
+/* ============================================================
+   SIDEBAR AGENT STATUS MINI-PANEL
+   ============================================================ */
+.agent-status-panel {
+  position: relative;
+  z-index: 2;
+  margin-top: 0.6rem;
+}
+
+.agent-status-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #DAA520;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.agent-status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.agent-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #0D0D0D;
+  border: 2px solid #8B4513;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #000;
+  cursor: default;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+  position: relative;
+}
+
+.agent-dot .ph { font-size: 1rem; color: #8B4513; transition: color 0.2s; }
+
+.agent-dot.online  { border-color: #32CD32; box-shadow: 2px 2px 0 #000, 0 0 8px rgba(50,205,50,0.4); }
+.agent-dot.online .ph { color: #32CD32; }
+
+.agent-dot.offline { border-color: #FF1493; box-shadow: 2px 2px 0 #000; }
+.agent-dot.offline .ph { color: #FF1493; }
+
+.agent-dot:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #000;
+}
+
+/* tooltip */
+.agent-dot::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  color: #FFD700;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  border: 1px solid #FFD700;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 100;
+}
+
+.agent-dot:hover::after { opacity: 1; }
+
+/* ============================================================
+   AGENTS GRID VIEW
+   ============================================================ */
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+}
+
+.agent-card {
+  background: #0A0A0A;
+  background-image: radial-gradient(circle, rgba(138,43,226,0.08) 1px, transparent 1px);
+  background-size: 8px 8px;
+  border: 3px solid #000;
+  box-shadow: 5px 5px 0 #8A2BE2;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: transform 0.1s, box-shadow 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+
+.agent-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #FF1493, #FFD700, #00CED1);
+}
+
+.agent-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 #FF1493;
+}
+
+.agent-card-icon {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #1A0F08, #3A2818);
+  border: 3px solid #FFD700;
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.agent-card-icon .ph {
+  font-size: 1.8rem;
+  color: #FFD700;
+}
+
+.agent-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: #FFD700;
+  -webkit-text-stroke: 0.5px #000;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.agent-card p {
+  font-family: 'Crimson Text', serif;
+  font-size: 0.9rem;
+  color: #D3C7A8;
+  font-style: italic;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.agent-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.7rem;
+  border: 2px solid #8B4513;
+  border-radius: 3px;
+  background: #0D0D0D;
+  color: #8B4513;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.3s;
+}
+
+.agent-status-badge.online {
+  border-color: #32CD32;
+  color: #32CD32;
+  box-shadow: 2px 2px 0 #000, 0 0 8px rgba(50,205,50,0.3);
+}
+
+.agent-status-badge.offline {
+  border-color: #FF1493;
+  color: #FF1493;
+}

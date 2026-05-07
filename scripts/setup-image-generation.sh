@@ -16,11 +16,12 @@ NC='\033[0m' # No Color
 WEBUI_DIR="$HOME/stable-diffusion-webui"
 MODELS_DIR="$WEBUI_DIR/models/Stable-diffusion"
 LORA_DIR="$WEBUI_DIR/models/Lora"
-LOG_FILE="logs/image-generation-setup.log"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOG_FILE="$SCRIPT_DIR/../logs/image-generation-setup.log"
 
 # Create necessary directories
-mkdir -p logs
-mkdir -p config/image-generation
+mkdir -p "$SCRIPT_DIR/../logs"
+mkdir -p "$SCRIPT_DIR/../config/image-generation"
 
 echo -e "${BLUE}🎨 Baker Street Laboratory - Image Generation Setup${NC}"
 echo -e "${BLUE}=================================================${NC}"
@@ -141,7 +142,7 @@ EOF
     chmod +x "$WEBUI_DIR/webui-user.sh"
     
     # Create Baker Street integration config
-    cat > "config/image-generation/baker-street-prompts.yaml" << 'EOF'
+    cat > "$SCRIPT_DIR/../config/image-generation/baker-street-prompts.yaml" << 'EOF'
 # Baker Street Laboratory - Image Generation Prompts
 # Specialized prompts for psychedelic detective art
 
@@ -188,7 +189,7 @@ settings:
 EOF
 
     # Create API integration script
-    cat > "scripts/generate-image.py" << 'EOF'
+    cat > "$SCRIPT_DIR/../scripts/generate-image.py" << 'EOF'
 #!/usr/bin/env python3
 """
 Baker Street Laboratory - Image Generation API
@@ -208,7 +209,7 @@ class BakerStreetImageGenerator:
         self.config = self.load_config()
     
     def load_config(self):
-        config_path = Path("config/image-generation/baker-street-prompts.yaml")
+        config_path = Path("$SCRIPT_DIR/../config/image-generation/baker-street-prompts.yaml")
         if config_path.exists():
             with open(config_path, 'r') as f:
                 return yaml.safe_load(f)
@@ -247,7 +248,7 @@ class BakerStreetImageGenerator:
             # Save image
             if result.get("images"):
                 image_data = base64.b64decode(result["images"][0])
-                output_path = Path(f"output/images/{scene_type}_{style}.png")
+                output_path = Path(f"$SCRIPT_DIR/../output/images/{scene_type}_{style}.png")
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 
                 with open(output_path, "wb") as f:
@@ -283,7 +284,7 @@ if __name__ == "__main__":
     main()
 EOF
 
-    chmod +x "scripts/generate-image.py"
+    chmod +x "$SCRIPT_DIR/../scripts/generate-image.py"
     
     log_message "${GREEN}✅ Configuration files created${NC}"
 }
