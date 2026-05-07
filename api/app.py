@@ -8,7 +8,7 @@ import os
 import sys
 import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, Any, Optional
 
@@ -69,6 +69,7 @@ def initialize_app():
 research_ns = Namespace('research', description='Research operations')
 system_ns = Namespace('system', description='System status and health')
 reports_ns = Namespace('reports', description='Research reports management')
+broker_ns = Namespace('broker', description='Agent authentication and credential brokering')
 
 # Initialize API with app
 api.init_app(app)
@@ -76,6 +77,35 @@ api.init_app(app)
 api.add_namespace(research_ns)
 api.add_namespace(system_ns)
 api.add_namespace(reports_ns)
+api.add_namespace(broker_ns)
+
+# ... (broker endpoint)
+
+@broker_ns.route('/token')
+class BrokerToken(Resource):
+    @broker_ns.doc('get_broker_token')
+    def post(self):
+        """Request a short-lived, scoped token for agent operations."""
+        try:
+            data = request.get_json()
+            agent_id = data.get('agent_id')
+            scope = data.get('scope')
+            
+            # Here, we would validate agent identity (e.g., via SPIFFE/OIDC)
+            # For phase 1, we return a signed ephemeral token (JWT)
+            # In professional implementation, use a private/public key pair
+            import jwt # Requires PyJWT
+            payload = {
+                'agent_id': agent_id,
+                'scope': scope,
+                'exp': datetime.utcnow() + timedelta(minutes=15)
+            }
+            token = jwt.encode(payload, 'ephemeral-secret-key', algorithm='HS256')
+            
+            return {'token': token, 'expires_in': 900}
+        except Exception as e:
+            app_logger.error(f"Broker token request failed: {e}")
+            return {'error': str(e)}, 500
 
 # API Models for documentation
 research_query_model = api.model('ResearchQuery', {
@@ -176,7 +206,7 @@ class SystemHealth(Resource):
                 loop.close()
             
             status = {
-                'status': 'healthy' if env_status['overall_status'] else 'unhealthy',
+                'status': 'healthy' if env_status['valid'] else 'unhealthy',
                 'timestamp': datetime.now().isoformat(),
                 'components': {
                     'environment': env_status,
