@@ -15,7 +15,7 @@ beautifulsoup4>=4.14.3
 aiohttp>=3.8.0
 
 # Configuration and Environment
-click>=8.1.0
+click>=8.3.3
 tqdm>=4.65.0
 
 # Testing and Quality
