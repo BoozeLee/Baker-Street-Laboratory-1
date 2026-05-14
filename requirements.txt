@@ -32,7 +32,7 @@ sqlalchemy>=2.0.0
 aiofiles>=23.0.0
 
 # Utilities
-markdown>=3.4.0
+markdown>=3.10.2
 
 # API Framework
 flask>=3.0.0
