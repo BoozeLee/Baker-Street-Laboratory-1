@@ -23,7 +23,7 @@ pytest>=7.4.0
 pytest-asyncio>=0.21.0
 
 # Logging and Monitoring
-rich>=13.0.0
+rich>=15.0.0
 
 # Database
 sqlalchemy>=2.0.0
