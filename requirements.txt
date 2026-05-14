@@ -46,7 +46,7 @@ gunicorn>=21.2.0
 flask-limiter>=3.5.0
 flask-caching>=2.1.0
 redis>=5.0.0
-celery>=5.3.0
+celery>=5.6.3
 
 # Cloud & Monitoring
 prometheus-flask-exporter>=0.23.0
