@@ -12,7 +12,7 @@ numpy>=1.24.0
 # Web Scraping and API Integration
 requests>=2.31.0
 beautifulsoup4>=4.14.3
-aiohttp>=3.8.0
+aiohttp>=3.13.5
 
 # Configuration and Environment
 click>=8.3.3
