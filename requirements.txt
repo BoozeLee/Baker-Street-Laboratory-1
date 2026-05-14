@@ -1,6 +1,6 @@
 # Baker Street Laboratory - Python Dependencies (Python 3.13 Compatible)
 # Core AI and ML Libraries
-openai>=1.0.0
+openai>=2.36.0
 python-dotenv>=1.0.0
 pyyaml>=6.0.3
 pydantic>=2.0.0
