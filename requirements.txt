@@ -1,7 +1,7 @@
 # Baker Street Laboratory - Python Dependencies (Python 3.13 Compatible)
 # Core AI and ML Libraries
 openai>=2.36.0
-python-dotenv>=1.0.0
+python-dotenv>=1.2.2
 pyyaml>=6.0.3
 pydantic>=2.13.4
 
@@ -51,7 +51,7 @@ celery>=5.6.3
 # Cloud & Monitoring
 prometheus-flask-exporter>=0.23.0
 sentry-sdk[flask]>=1.38.0
-python-dotenv>=1.0.0
+python-dotenv>=1.2.2
 
 # Additional APIs Integration
 wikipedia>=1.4.0
