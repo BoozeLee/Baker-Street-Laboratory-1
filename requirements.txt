@@ -50,7 +50,7 @@ celery>=5.6.3
 
 # Cloud & Monitoring
 prometheus-flask-exporter>=0.23.0
-sentry-sdk[flask]>=1.38.0
+sentry-sdk[flask]>=2.60.0
 python-dotenv>=1.2.2
 
 # Additional APIs Integration
