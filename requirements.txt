@@ -6,7 +6,7 @@ pyyaml>=6.0.3
 pydantic>=2.13.4
 
 # Data Processing and Analysis
-pandas>=2.0.0
+pandas>=3.0.3
 numpy>=1.24.0
 
 # Web Scraping and API Integration
