@@ -1,0 +1,29 @@
+# Worker Service — Background job execution pool
+# Executes dispatched commands and HTTP requests
+
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+COPY package*.json ./
+COPY pnpm-workspace.yaml ./
+COPY tsconfig.base.json ./
+
+RUN npm install -g pnpm
+RUN pnpm install --frozen-lockfile
+
+COPY worker/ ./worker/
+RUN pnpm --filter bsl-worker build
+
+FROM node:20-alpine AS runtime
+WORKDIR /app
+
+COPY --from=builder /app/worker/dist ./worker
+COPY --from=builder /app/worker/package.json ./worker/
+
+ENV NODE_ENV=production
+ENV WORKER_PORT=30001
+ENV BRAIN_URL=http://brain:30000
+ENV NATS_URL=nats://nats:4222
+
+EXPOSE 30001
+CMD ["node", "worker/index.js"]

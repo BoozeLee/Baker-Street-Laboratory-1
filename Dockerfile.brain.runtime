@@ -1,0 +1,27 @@
+# Runtime-only image: bsl-brain
+FROM node:20-alpine AS runtime
+WORKDIR /app
+
+# Install Python for BSL tools
+RUN apk add --no-cache python3 py3-pip
+
+# Install only production deps + better-sqlite3 (no native build needed - prebuilt)
+RUN mkdir -p node_modules && \
+    echo '{"dependencies":{"better-sqlite3":"^11.5.0"}}' > package.json && \
+    npm install --omit=dev --no-save better-sqlite3 && \
+    rm package.json
+
+# Copy pre-built brain dist from context (assumes dist/ already exists)
+COPY brain/dist/ ./brain/dist/
+COPY brain/package.json ./brain/
+COPY operating_system/ ./operating_system/
+COPY requirements.txt ./
+
+RUN mkdir -p /app/data
+
+EXPOSE 30000
+ENV NODE_ENV=production
+ENV BRAIN_PORT=30000
+ENV CONFIG_PATH=/app/operating_system
+ENV SQLITE_PATH=/app/data/bakerst.db
+CMD ["node", "brain/index.js"]

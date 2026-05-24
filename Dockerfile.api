@@ -1,0 +1,36 @@
+# Dockerfile for Baker Street Laboratory API (Python)
+# This keeps existing BSL functionality intact
+
+FROM python:3.13-slim AS base
+
+# System deps
+RUN apt-get update && apt-get install -y \
+    curl \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Create non-root user
+RUN useradd -m -u 1000 bsl
+USER bsl
+
+# Copy only requirements first for Docker layer caching
+COPY --chown=bsl:bsl requirements.txt .
+
+# Install Python deps (user-local to avoid sudo)
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY --chown=bsl:bsl . .
+
+# Environment
+ENV PYTHONUNBUFFERED=1
+ENV PATH="/home/bsl/.local/bin:${PATH}"
+
+# Expose
+EXPOSE 5000
+
+# CMD via docker-compose override

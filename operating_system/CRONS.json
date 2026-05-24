@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "description": "Scheduled tasks for Baker Street Laboratory agent",
+  "schedules": [
+    {
+      "id": "daily_research_digest",
+      "cron": "0 9 * * *",
+      "tool": "conduct_research",
+      "parameters": {
+        "query": "Summary of latest research breakthroughs across all domains",
+        "output_dir": "research/daily_digests",
+        "format": "digest"
+      },
+      "enabled": true
+    },
+    {
+      "id": "weekly_model_health_check",
+      "cron": "0 6 * * 1",
+      "tool": "get_system_status",
+      "parameters": {},
+      "enabled": true
+    },
+    {
+      "id": "hourly_vector_store_maintenance",
+      "cron": "0 */6 * * *",
+      "tool": "maintenance_compact",
+      "parameters": {},
+      "enabled": false
+    }
+  ]
+}

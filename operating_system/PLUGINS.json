@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "description": "Plugin / MCP server registry for Baker Street Laboratory",
+  "plugins": [
+    {
+      "id": "filesystem",
+      "tier": 1,
+      "transport": "stdio",
+      "command": "python3 -m plugins.filesystem.server",
+      "description": "Sandboxed filesystem operations",
+      "tools": ["read_file", "list_directory", "file_info"],
+      "enabled": true
+    },
+    {
+      "id": "web_search",
+      "tier": 3,
+      "transport": "http",
+      "endpoint": "http://extension-web-search:8080/mcp",
+      "description": "Live web search via multiple engines",
+      "tools": ["search", "fetch_url", "extract_text"],
+      "enabled": false
+    },
+    {
+      "id": "data_analysis",
+      "tier": 2,
+      "transport": "http",
+      "endpoint": "http://localhost:8081",
+      "description": "Statistical analysis and visualization",
+      "tools": ["regression", "anova", "pca", "clustering"],
+      "enabled": true
+    }
+  ]
+}

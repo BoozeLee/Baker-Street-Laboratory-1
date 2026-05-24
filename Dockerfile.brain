@@ -1,0 +1,50 @@
+# Stage 1: Build
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Copy manifests
+COPY brain/package*.json ./
+COPY pnpm-workspace.yaml ./
+COPY tsconfig.base.json ./
+
+# Install dependencies (native modules: better-sqlite3 needs build tools)
+RUN pnpm install --unsafe-perm
+
+# Copy source
+COPY brain/ ./brain/
+
+# Build
+RUN pnpm --filter bsl-brain build
+
+# Stage 2: Runtime
+FROM node:20-alpine AS runtime
+WORKDIR /app
+
+# Install Python for BSL integration (if needed for local tools)
+RUN apk add --no-cache python3 py3-pip
+
+# Copy built Brain service
+COPY --from=builder /app/brain/dist ./brain
+COPY --from=builder /app/brain/package.json ./brain/
+
+# Copy operating system prompts
+COPY operating_system/ ./operating_system/
+
+# Create data directory for SQLite & vector store
+RUN mkdir -p /app/data
+
+# Expose ports
+# 30000 — Brain HTTP API
+EXPOSE 30000
+
+# Environment variables
+ENV NODE_ENV=production
+ENV BRAIN_PORT=30000
+ENV CONFIG_PATH=/app/operating_system
+ENV SQLITE_PATH=/app/data/bakerst.db
+
+# Start Brain
+CMD ["node", "brain/index.js"]
