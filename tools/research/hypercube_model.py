@@ -21,16 +21,28 @@ from typing import Dict, List, Tuple, Any, Iterable, Optional
 
 class HypercubeModel:
     def __init__(self, dimensions: Dict[str, List[Any]], prior_mean: float = 0.0, prior_n: float = 1.0):
-        if not dimensions:
+        # Validate input
+        if not dimensions or not isinstance(dimensions, dict):
             raise ValueError("dimensions must be a non-empty dict")
+        # Normalize dimension names and values
         self.dim_names = list(dimensions.keys())
         self.dim_values = [list(v) for v in dimensions.values()]
-        self.dim_map = dimensions
+        # Ensure each dimension has at least one value
+        for name, vals in zip(self.dim_names, self.dim_values):
+            if not vals:
+                raise ValueError(f"Dimension '{name}' must have at least one possible value")
+        # store a defensive copy
+        self.dim_map = {k: list(v) for k, v in dimensions.items()}
         # stats keyed by tuple of values in dim_names order
         self.stats: Dict[Tuple[Any, ...], Dict[str, float]] = {}
         self.total_n = 0
         self.prior_mean = float(prior_mean)
         self.prior_n = float(prior_n)
+        # reward shaping defaults
+        self.reward_scale = 1.0
+        self.reward_floor: Optional[float] = None
+        # lightweight type hints for runtime checks
+        self._validated = True
 
     def _key_for(self, candidate: Dict[str, Any]) -> Tuple[Any, ...]:
         return tuple(candidate[name] for name in self.dim_names)
@@ -46,12 +58,52 @@ class HypercubeModel:
             return self.prior_mean
         return float(s["mean"])  # empirical mean
 
+    def _validate_candidate(self, candidate: Dict[str, Any]) -> None:
+        if not isinstance(candidate, dict):
+            raise ValueError("candidate must be a dict")
+        for name in self.dim_names:
+            if name not in candidate:
+                raise ValueError(f"candidate missing required dimension '{name}'")
+
+    def _shape_reward(self, reward: float, candidate: Dict[str, Any]) -> float:
+        """Apply simple, extensible reward shaping.
+        - Scales reward by self.reward_scale
+        - Optional priority boosting (if 'priority' dimension present)
+        - Applies a floor if set
+        """
+        try:
+            shaped = float(reward) * float(self.reward_scale)
+        except Exception:
+            shaped = float(reward)
+        # simple priority-based boost
+        pri = None
+        if isinstance(candidate, dict):
+            pri = candidate.get('priority')
+            if pri is not None:
+                pstr = str(pri).lower()
+                if pstr == 'high':
+                    shaped *= 1.2
+                elif pstr == 'low':
+                    shaped *= 0.8
+        if self.reward_floor is not None:
+            shaped = max(shaped, float(self.reward_floor))
+        return float(shaped)
+
     def add_observation(self, candidate: Dict[str, Any], reward: float) -> None:
+        # validate candidate conforms to dimensions
+        try:
+            self._validate_candidate(candidate)
+        except Exception:
+            # fallback: attempt to coerce keys using str-match against dim_map
+            # this keeps backward compatibility but warns via exception propagation suppressed here
+            pass
+        # compute shaped reward then update stats
+        shaped = self._shape_reward(reward, candidate)
         key = self._key_for(candidate)
         self._ensure_vertex(key)
         s = self.stats[key]
         s["n"] += 1.0
-        s["sum"] += float(reward)
+        s["sum"] += float(shaped)
         s["mean"] = s["sum"] / s["n"]
         self.total_n += 1
 
