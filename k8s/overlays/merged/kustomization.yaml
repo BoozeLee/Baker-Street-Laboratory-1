@@ -1,0 +1,33 @@
+namespace: bakerst
+
+resources:
+  # Existing BSL base deployment (from k8s/base)
+  - ../../base
+
+# ConfigMap with operating system prompts
+configMapGenerator:
+  - name: bakerst-os
+    files:
+      - SOUL.md=../../operating_system/SOUL.md
+      - BRAIN.md=../../operating_system/BRAIN.md
+      - CRONS.json=../../operating_system/CRONS.json
+      - TRIGGERS.json=../../operating_system/TRIGGERS.json
+      - PLUGINS.json=../../operating_system/PLUGINS.json
+    behavior: merge
+
+# Secrets for Brain (if different from BSL's secrets)
+secretGenerator:
+  - name: bsl-brain-secrets
+    envs:
+      - .env.brain
+    options:
+      disableNameSuffixHash: true
+
+# Patches to existing BSL API deployment
+patchesStrategicMerge:
+  - patches/bsl-api-mount.yaml   # mount operating_system ConfigMap
+  - patches/brain-deployment.yaml
+  - patches/brain-service.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true

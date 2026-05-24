@@ -36,7 +36,7 @@ function log(level: string, msg: string, meta?: any) {
 async function connectNATS(): Promise<void> {
   nc = await connect({ servers: NATS_URL, reconnectTimeWait: 3000, maxReconnectAttempts: 10 });
   js = nc.jetstream();
-  jsm = JetStreamManager.implicit(nc); // yields js manager
+  jsm = js as unknown as JetStreamManager;
   healthy = true;
   log('info', `Connected to NATS at ${NATS_URL}`);
 }
@@ -159,7 +159,7 @@ async function startConsumer(): Promise<void> {
 
   const streamInfo = await js.streams.get({ name: STREAM_NAME }).catch(async () => {
     log('warn', `Stream ${STREAM_NAME} not found — creating`);
-    return jsm.streams.add({ name: STREAM_NAME, subjects: [`${SUBJECT_PREFIX}>`] });
+    return jsm!.streams.add({ name: STREAM_NAME, subjects: [`${SUBJECT_PREFIX}>`] });
   });
 
   log('info', `JetStream stream ready: ${STREAM_NAME}`);

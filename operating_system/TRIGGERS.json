@@ -1,0 +1,39 @@
+{
+  "version": "1.0",
+  "description": "Event-driven triggers for Baker Street Laboratory",
+  "triggers": [
+    {
+      "id": "research_completed_notify",
+      "event": "research.completed",
+      "action": "send_notification",
+      "conditions": {
+        "confidence": { "$gt": 0.8 }
+      },
+      "parameters": {
+        "channel": "user",
+        "message": "Research complete! Key finding: {summary}"
+      }
+    },
+    {
+      "id": "model_offline_alert",
+      "event": "model.status.down",
+      "action": "alert_admin",
+      "conditions": {},
+      "parameters": {
+        "severity": "warning",
+        "auto_restart": true
+      }
+    },
+    {
+      "id": "memory_high_usage",
+      "event": "memory.usage",
+      "action": "compress_memories",
+      "conditions": {
+        "usage_pct": { "$gt": 90 }
+      },
+      "parameters": {
+        "aggressiveness": "medium"
+      }
+    }
+  ]
+}

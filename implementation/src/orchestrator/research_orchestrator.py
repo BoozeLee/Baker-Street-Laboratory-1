@@ -13,6 +13,7 @@ from typing import Dict, Any, Optional, List
 from core.config import Config
 from core.logger import get_logger, create_session_logger
 from ai.ollama_client import OllamaClient
+import importlib.util
 
 
 class ResearchOrchestrator:
@@ -36,6 +37,29 @@ class ResearchOrchestrator:
         # Initialize AI clients
         self.ollama_client = OllamaClient()
         self.ollama_available = False
+
+        # Initialize or load HypercubeModel for experimental decision-making
+        self.HypercubeModel = None
+        self.hypercube_model = None
+        try:
+            model_file = Path(__file__).resolve().parents[3] / 'tools' / 'research' / 'hypercube_model.py'
+            if model_file.exists():
+                spec = importlib.util.spec_from_file_location('hypercube_model', str(model_file))
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                HypercubeModel = getattr(mod, 'HypercubeModel')
+            else:
+                # fallback to package import if available
+                from tools.research.hypercube_model import HypercubeModel
+
+            # expose class for later reinitialization and create a default instance
+            self.HypercubeModel = HypercubeModel
+            dims = {'approach': ['literature_review', 'experiment', 'simulation'], 'priority': ['low','medium','high']}
+            self.hypercube_model = self.HypercubeModel(dims)
+        except Exception as e:
+            self.logger.warning(f'Failed to initialize HypercubeModel: {e}')
+            self.HypercubeModel = None
+            self.hypercube_model = None
 
     async def initialize(self) -> bool:
         """
@@ -105,7 +129,16 @@ class ResearchOrchestrator:
             # Phase 1: Query Analysis and Planning
             self.logger.info("Phase 1: Analyzing query and planning research")
             research_plan = await self._analyze_query(query)
-            
+
+            # Update hypercube model dimensions from research_plan if available
+            try:
+                dims = research_plan.get('hypercube_dimensions') if isinstance(research_plan, dict) else None
+                if dims and getattr(self, 'HypercubeModel', None):
+                    self.hypercube_model = self.HypercubeModel(dims)
+                    self.logger.info(f'Hypercube model reinitialized with dims: {dims}')
+            except Exception as e:
+                self.logger.warning(f'Failed to reinitialize HypercubeModel with research_plan dims: {e}')
+
             # Phase 2: Data Collection
             self.logger.info("Phase 2: Collecting data and sources")
             collected_data = await self._collect_data(research_plan)
@@ -113,6 +146,51 @@ class ResearchOrchestrator:
             # Phase 3: Analysis and Synthesis
             self.logger.info("Phase 3: Analyzing and synthesizing findings")
             analysis_results = await self._analyze_data(collected_data)
+
+            # Integrate HypercubeModel to suggest next research actions and persist state
+            try:
+                if getattr(self, 'hypercube_model', None):
+                    # create a candidate covering all hypercube dimensions, filling defaults when necessary
+                    candidate = {}
+                    for name in self.hypercube_model.dim_names:
+                        if name == 'approach':
+                            candidate[name] = 'literature_review' if analysis_results.get('analysis_method','').startswith('ollama') else 'experiment'
+                        elif name == 'priority':
+                            candidate[name] = 'high' if analysis_results.get('confidence_score', 0.5) > 0.8 else 'medium'
+                        elif name == 'focus':
+                            # try to pick a focus from analysis key findings or key_concepts
+                            if isinstance(analysis_results.get('key_findings'), list) and analysis_results.get('key_findings'):
+                                candidate[name] = analysis_results.get('key_findings')[0]
+                            elif isinstance(analysis_results.get('key_concepts'), list) and analysis_results.get('key_concepts'):
+                                candidate[name] = analysis_results.get('key_concepts')[0]
+                            else:
+                                # fallback to first defined dim value
+                                candidate[name] = list(self.hypercube_model.dim_map.get(name, ['general']))[0]
+                        else:
+                            # generic fallback: use first available dimension value
+                            vals = list(self.hypercube_model.dim_map.get(name, []))
+                            candidate[name] = vals[0] if vals else None
+
+                    # ensure no None values (replace with string 'unknown')
+                    for k,v in candidate.items():
+                        if v is None:
+                            candidate[k] = 'unknown'
+
+                    reward = float(analysis_results.get('confidence_score', 0.5))
+                    self.hypercube_model.add_observation(candidate, reward)
+
+                    suggestions = self.hypercube_model.suggest_next(3)
+                    self.logger.info(f"Hypercube suggestions: {suggestions}")
+
+                    # persist the hypercube model in the session output directory
+                    try:
+                        model_save_path = output_path / f'hypercube_model_{self.session_id}.json'
+                        self.hypercube_model.save(str(model_save_path))
+                        self.logger.info(f'Hypercube model saved to {model_save_path}')
+                    except Exception as e:
+                        self.logger.warning(f'Failed saving hypercube model: {e}')
+            except Exception as e:
+                self.logger.warning(f'Hypercube integration failed: {e}')
             
             # Phase 4: Report Generation
             self.logger.info("Phase 4: Generating research report")
@@ -184,16 +262,32 @@ class ResearchOrchestrator:
             except Exception as e:
                 self.logger.error(f"Ollama query analysis failed: {e}")
 
-        # Fallback to basic analysis if Ollama not available
-        plan = {
+        # Fallback to basic analysis if Ollama not available or to augment the research_plan
+        research_type = self._determine_research_type(query)
+        key_concepts = self._extract_key_concepts(query)
+        research_approaches = research_plan.get('research_approaches') or []
+        if not research_approaches:
+            research_approaches = ['literature_review', 'experiment', 'simulation']
+
+        plan_fields = {
             "query": query,
-            "research_type": self._determine_research_type(query),
-            "key_concepts": self._extract_key_concepts(query),
+            "research_type": research_type,
+            "key_concepts": key_concepts,
+            "research_approaches": research_approaches,
             "search_strategies": self._generate_search_strategies(query),
             "expected_sources": ["academic", "web", "books", "reports"]
         }
-        
-        return plan
+        research_plan.update(plan_fields)
+
+        # Build simple hypercube dimensions based on the plan
+        hc_dims = {
+            'approach': research_approaches,
+            'focus': list(dict.fromkeys(key_concepts)) if key_concepts else ['general'],
+            'priority': ['low', 'medium', 'high']
+        }
+        research_plan['hypercube_dimensions'] = hc_dims
+
+        return research_plan
     
     async def _collect_data(self, research_plan: Dict[str, Any]) -> Dict[str, Any]:
         """Collect data based on the research plan."""

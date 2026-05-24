@@ -1,0 +1,23 @@
+# Patch: BSL API mounts operating_system ConfigMap
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bsl-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          volumeMounts:
+            - name: operating-system
+              mountPath: /app/operating_system
+              readOnly: true
+      volumes:
+        - name: operating-system
+          configMap:
+            name: bakerst-os
+            items:
+              - key: SOUL.md
+                path: SOUL.md
+              - key: BRAIN.md
+                path: BRAIN.md

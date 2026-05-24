@@ -1,0 +1,11 @@
+# Gateway – lightweight Node.js runtime
+FROM node:20-alpine AS runtime
+WORKDIR /app
+RUN npm install --omit=dev --no-save express cors axios telegraf discord.js uuid 2>&1 | tail -3
+COPY gateway/dist/ ./gateway/dist/
+COPY gateway/package.json ./gateway/
+ENV NODE_ENV=production
+ENV GATEWAY_PORT=8080
+ENV BRAIN_URL=http://brain:30000
+EXPOSE 8080
+CMD ["node", "gateway/index.js"]

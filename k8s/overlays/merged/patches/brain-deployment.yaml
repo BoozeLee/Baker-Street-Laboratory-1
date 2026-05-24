@@ -1,0 +1,71 @@
+# Brain Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: brain
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: brain
+  template:
+    metadata:
+      labels:
+        app: brain
+    spec:
+      containers:
+        - name: brain
+          image: bsl-brain:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 30000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: bakerst-os
+            - secretRef:
+                name: bsl-brain-secrets
+          env:
+            - name: BSL_API_URL
+              value: "http://bsl-api:5000"
+            - name: NATS_URL
+              value: "nats://nats:4222"
+            - name: QDRANT_URL
+              value: "http://qdrant:6333"
+            - name: SQLITE_PATH
+              value: "/data/bakerst.db"
+            - name: CONFIG_PATH
+              value: "/app/operating_system"
+          volumeMounts:
+            - name: operating-system
+              mountPath: /app/operating_system
+              readOnly: true
+            - name: bsl-data
+              mountPath: /app/data
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 30000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 30000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      volumes:
+        - name: operating-system
+          configMap:
+            name: bakerst-os
+        - name: bsl-data
+          persistentVolumeClaim:
+            claimName: bsl-data-pvc

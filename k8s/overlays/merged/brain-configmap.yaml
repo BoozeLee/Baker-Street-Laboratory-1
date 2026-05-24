@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bakerst-os
+  namespace: bakerst
+data:
+  SOUL.md: |
+    # See /operating_system/SOUL.md in repository
+  BRAIN.md: |
+    # See /operating_system/BRAIN.md in repository
+  CRONS.json: |
+    { "schedules": [] }
+  TRIGGERS.json: |
+    { "triggers": [] }
+  PLUGINS.json: |
+    { "plugins": [] }

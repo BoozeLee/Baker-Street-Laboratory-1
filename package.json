@@ -1,0 +1,26 @@
+{
+  "name": "baker-street-laboratory-merged",
+  "version": "2.1.0",
+  "description": "Baker Street Laboratory merged with Baker Street Project agent architecture",
+  "private": true,
+  "workspaces": [
+    "brain",
+    "gateway",
+    "worker"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "concurrently \"pnpm --filter bsl-api start\" \"pnpm --filter bsl-brain start\" \"pnpm --filter bsl-gateway start\"",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "python": ">=3.10"
+  }
+}
