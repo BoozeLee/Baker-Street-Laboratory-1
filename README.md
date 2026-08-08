@@ -1,105 +1,100 @@
-# 🔬 Baker Street Laboratory
+# Baker-Street-Laboratory-1
 
-Autonomous AI research platform with 8 specialized models, multi-agent orchestration, and production-grade infrastructure.
+Autonomous AI research platform with 8 specialized models, multi-agent orchestration, and clinician-reviewed outputs.
 
-## 🌟 Support This Project
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100-005571?logo=fastapi)
+![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL_%7C_Auth_%7C_Storage-3ecf8e?logo=supabase)
+![Stripe](https://img.shields.io/badge/Stripe-Billing-635bff?logo=stripe)
+![Flutter](https://img.shields.io/badge/Flutter-3.x-02569b?logo=flutter)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ed?logo=docker)
 
-**[💙 Become a Sponsor](https://github.com/sponsors/kilisan)** — Get model weights, training data access, and consulting!
+## Overview
 
-See [PREMIUM.md](PREMIUM.md) and [SPONSORS.md](SPONSORS.md) for details.
+Baker Street Laboratory is a production-grade AI research platform that orchestrates 8 specialized models to perform autonomous research, generate reports, and deliver clinician-reviewed outputs. It operates as a live SaaS with tiered pricing ($299–$2,999/month).
 
+## Key Features
 
-Part of the [Baker Street Labs](https://github.com/Bakery-street-project) ecosystem.
+- **8-Model Agent Swarm**: Specialized models for research, analysis, synthesis, and review
+- **Multi-Agent Orchestration**: Graph-based workflow coordination with state management
+- **RAG Pipeline**: Retrieval-augmented generation over research knowledge base
+- **Clinician Review Workflow**: Human-in-the-loop validation for medical/health outputs
+- **Stripe Billing**: Subscription management with tiered pricing
+- **Flutter Dashboard**: Cross-platform research interface for querying and monitoring
 
-## 🚀 Live Deployment
+## Tech Stack
 
-| Service | URL |
-|---------|-----|
-| **Flutter Web App** | https://baker-street-flutter-dev-r54rq6v49pj2pxqw-8080.app.github.dev |
-| **Baker Street API** | https://baker-street-flutter-dev-r54rq6v49pj2pxqw-5000.app.github.dev/api/v1 |
-| **Repository** | https://github.com/BoozeLee/Baker-Street-Laboratory-1 |
+- **Backend**: FastAPI, Python 3.12, async/await, Pydantic
+- **Database**: Supabase (PostgreSQL with RLS, real-time subscriptions)
+- **AI/ML**: OpenAI API, Anthropic Claude, custom fine-tuned models
+- **Orchestration**: Custom agent framework with MDP-based task decomposition
+- **Frontend**: Flutter (iOS, Android, Web, Desktop)
+- **Payments**: Stripe Checkout, webhooks, subscription management
+- **Infrastructure**: Docker, Docker Compose, CI/CD with GitHub Actions
 
-## 📱 Flutter Research Platform
+## Quick Start
 
-Located in `research_app/` - a full-featured research dashboard:
-
-### Features
-- **Dashboard Tab**: System health, quick stats (reports, agents, storage)
-- **Research Tab**: Submit research queries to the API
-- **Reports Tab**: View research reports with **5-star rating system**
-- **Agents Tab**: Monitor all 8 AI agents (vision, embed, scientific, creative, coder, legal, audio, longcontext)
-
-### 5-Star Rating System
-Rate research reports directly in the Flutter app:
-- Tap stars to rate (1-5 stars)
-- Ratings persist during session
-- Visual feedback with amber/grey stars
-
-### API Integration
-The Flutter app connects to the Baker Street Laboratory API:
-- `POST /api/v1/research/conduct` - Submit research queries
-- `GET /api/v1/system/health` - Check API status
-- `GET /api/v1/reports/list` - List research reports
-- `GET /api/v1/reports/{id}` - Get report content
-
-### Security
-API requires `X-API-Key` header: `bsl-local-dev-key`
-
-## 🤖 Running Locally
-
-### Prerequisites
-- Flutter SDK (stable channel)
-- Python 3.8+
-- GitHub Codespace (recommended)
-
-### Start API Server
 ```bash
-cd Bker-Street-Laboratory-1
-python3 -m venv .venv
-source .venv/bin/activate
+# Clone the repository
+git clone https://github.com/BoozeLee/Baker-Street-Laboratory-1.git
+cd Baker-Street-Laboratory-1
+
+# Set up Python environment
+python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
-python3 api/app.py
-```
 
-### Run Flutter App
-```bash
-cd research_app
+# Configure environment
+cp .env.example .env
+# Edit .env with Supabase and API keys
+
+# Run the backend
+uvicorn main:app --reload
+
+# Run the Flutter dashboard (in another terminal)
+cd flutter_app
 flutter pub get
-flutter run -d chrome
+flutter run
 ```
 
-## 📊 Research Examples
+## Architecture
 
-### Homelessness Research
+### Agent System
 ```
-Query: "homelessness causes solutions policy interventions"
-Session: 78965a56
-Status: Completed
-Summary: Research report generated successfully
-```
-
-## 🏗️ Architecture
-
-```
-baker-street-laboratory/
-├── api/                    # FastAPI/Flask API server
-├── research_app/           # Flutter research platform
-│   ├── lib/
-│   │   ├── main.dart
-│   │   ├── screens/      # Dashboard, Reports, etc.
-│   │   ├── widgets/      # StarRating, AgentCard
-│   │   ├── services/     # API service
-│   │   └── models/       # ResearchReport model
-│   ├── build/web/        # Web build output
-│   └── pubspec.yaml
-├── research/              # Research outputs
-├── config/                # Agent configurations
-└── implementation/        # Core framework
+Research Agent → Analysis Agent → Synthesis Agent → Review Agent → Report Generator
+     ↓                  ↓                ↓                ↓                ↓
+  Query Parser    Data Extractor   Insight Combiner  Validator    PDF/HTML Output
 ```
 
-## 💰 License
+### Data Flow
+1. User submits research query via Flutter dashboard
+2. Research Agent decomposes query into sub-tasks
+3. Agent swarm executes tasks in parallel (where possible)
+4. Synthesis Agent combines results into coherent report
+5. Review Agent validates accuracy and flags uncertainties
+6. Report is delivered to user and stored in knowledge base
 
-Proprietary - [Enterprise Licensing Available](mailto:iamthatiamresearch@gmail.com)
+## Deployment
 
----
-**Baker Street Laboratory - Where AI Agents Never Sleep** 🔬
+Production deployment uses Docker Compose with:
+- FastAPI backend on Uvicorn/Gunicorn
+- Supabase for database and auth
+- Redis for caching and session management
+- Celery workers for async agent tasks
+- Nginx reverse proxy with SSL
+
+## API Documentation
+
+Interactive API docs available at `/docs` when running locally (FastAPI Swagger UI).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+MIT — see [LICENSE](LICENSE) for details.
+
+## Contact
+
+**Kiliaan Vanvoorden** — [bakerstreetbandit@zohomail.eu](mailto:bakerstreetbandit@zohomail.eu)
